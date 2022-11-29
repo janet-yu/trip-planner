@@ -1,14 +1,10 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 type CardProps = {
-  cardTitle: string;
-  cardSubtitle?: string;
-  textPosition?: 'bottomLeft' | 'center';
-  subtitlePosition?: 'top' | 'bottom';
   backgroundImageUrl?: string;
-  titleSize?: 'small' | 'large';
-  subtitleSize?: 'small' | 'large';
+  textPosition?: 'center' | 'bottomLeft';
+  children: any;
 };
 
 type StyledDivProps = {
@@ -29,8 +25,6 @@ const StyledDiv = styled.div<StyledDivProps>`
     props.textPosition === 'center' ? 'center' : 'flex-start'};
   justify-content: ${(props) =>
     props.textPosition === 'center' ? 'center' : 'flex-end'};
-  text-align: ${(props) =>
-    props.textPosition === 'center' ? 'center' : 'left'};
   min-height: 248px;
   position: relative;
   overflow: hidden;
@@ -48,34 +42,6 @@ const StyledDiv = styled.div<StyledDivProps>`
   }
 `;
 
-const StyledH3 = styled.h3<{ titleSize: string }>`
-  font-size: ${(props) => (props.titleSize === 'large' ? '2em' : '1.2em')};
-  margin: 0;
-`;
-
-// research stacking context again
-const TextContainer = styled.div`
-  margin: 1em 1em 1.5em 1.5em;
-  color: #fff;
-  position: relative;
-  z-index: 1;
-  font-family: 'Nunito', sans-serif;
-`;
-
-const SubtitleText = styled.h4<{ position?: string }>`
-  ${(props) =>
-    (props.position === 'bottom' || !props.position) &&
-    css`
-      margin: 0 0 0 0;
-    `}
-
-  ${(props) =>
-    props.position === 'top' &&
-    css`
-      margin: 0 0 4px 0;
-    `}
-`;
-
 /**
  * Need onclick handler
  * @param props
@@ -86,19 +52,7 @@ const Card = (props: CardProps) => {
       backgroundImageUrl={props.backgroundImageUrl}
       textPosition={props.textPosition}
     >
-      <TextContainer>
-        {props.subtitlePosition === 'top' && props.cardSubtitle && (
-          <SubtitleText position={props.subtitlePosition}>
-            {props.cardSubtitle}
-          </SubtitleText>
-        )}
-        <StyledH3 titleSize={props.titleSize}>{props.cardTitle}</StyledH3>
-        {(props.subtitlePosition === 'bottom' || !props.subtitlePosition) && (
-          <SubtitleText position={props.subtitlePosition}>
-            {props.cardSubtitle}
-          </SubtitleText>
-        )}
-      </TextContainer>
+      {props.children}
     </StyledDiv>
   );
 };

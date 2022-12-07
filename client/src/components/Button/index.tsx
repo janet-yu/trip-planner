@@ -31,19 +31,33 @@ const StyledButton = styled.button<ButtonProps>`
     cursor: pointer;
   }
   ${(props) => variantStyles(props.variant)}
+  ${(props) => props.mTop && `margin-top: ${props.my}px;`}
+  ${(props) => props.mBottom && `margin-bottom: ${props.my}px;`}
+  ${(props) => props.my && `margin: ${props.my}px 0px;`}
+  ${(props) => props.mx && `margin: 0px ${props.mx}px;`}
 `;
 
 type ButtonProps = {
   onClick: MouseEventHandler;
   variant: 'primary' | 'secondary' | 'selected';
   children?: any;
+  my?: number;
+  mx?: number;
+  mTop?: number;
+  mBottom?: number;
+  mLeft?: number;
+  mRight?: number;
 };
 
-const Button = (props: ButtonProps) => {
-  const { onClick, variant, children } = props;
+// Don't use React.HTMLProps<HTMLButtonElement> lol
+// https://github.com/typescript-cheatsheets/react/issues/128
+const Button = (
+  props: ButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement>
+) => {
+  const { onClick, variant, children, ...rest } = props;
 
   return (
-    <StyledButton onClick={onClick} variant={variant}>
+    <StyledButton onClick={onClick} variant={variant} {...rest}>
       {children}
     </StyledButton>
   );

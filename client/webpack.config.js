@@ -1,14 +1,14 @@
-const path = require("path");
+const path = require('path');
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: './src/index.tsx',
   output: {
-    filename: "app.js",
-    path: path.resolve(__dirname, "dist")
+    filename: 'app.tsx',
+    path: path.resolve(__dirname, 'dist'),
   },
   devServer: {
-    contentBase: path.join(__dirname, "dist"),
-    port: 9000
+    contentBase: path.join(__dirname, 'dist'),
+    port: 9000,
   },
-  mode: "development"
+  mode: 'development',
 };

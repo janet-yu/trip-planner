@@ -6,7 +6,7 @@ type CardTextAreaProps = {
   children: any;
 };
 
-const TextContainer = styled.div<{ textAlign: string }>`
+const TextContainer = styled.div<{ textAlign?: string }>`
   margin: 1em 1em 1.5em 1.5em;
   color: #fff;
   position: relative;

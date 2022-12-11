@@ -1,4 +1,4 @@
-import express, { Router } from 'express';
+import { Router } from 'express';
 import Trip from '../models/trip';
 
 const tripRouter = Router();
@@ -47,8 +47,6 @@ tripRouter.patch('/:id', async (req, res) => {
     },
     { new: true }
   );
-
-  console.log({ updatedTrip });
 
   res.status(200).send(updatedTrip);
 });

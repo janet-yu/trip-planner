@@ -6,7 +6,8 @@ type CardTitleProps = {
   children: any;
 };
 
-const StyledH3 = styled.h3<{ size: string }>`
+// Add defaults?
+const StyledH3 = styled.h3<{ size?: string }>`
   font-size: ${(props) => (props.size === 'large' ? '2em' : '1.2em')};
   margin: 0;
 `;

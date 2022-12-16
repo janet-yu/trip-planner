@@ -3,10 +3,19 @@ import { ThemeProvider } from 'styled-components';
 
 const theme = {
   colors: {
-    primaryPurple: '#4150DC',
-    darkPurple: '#001A72',
-    paleYellow: '#FFF5C1',
-    grey: '#515151',
+    primary: {
+      [50]: '#E9EBFB',
+      [300]: '#7D88E9',
+      [400]: '#5F6CE3',
+      [500]: '#4150DC',
+    },
+    accent: '#FFF5C1',
+    grey: {
+      [400]: '#7F8AA4',
+      [500]: '#697693',
+      [700]: '#4A546B',
+      [800]: '#3A4255',
+    },
   },
 };
 

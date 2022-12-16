@@ -5,20 +5,20 @@ import styled, { css } from 'styled-components';
 const variantStyles = (variant: 'primary' | 'secondary' | 'selected') => {
   if (variant === 'primary' || variant === 'selected') {
     return css`
-      background-color: ${(props) => props.theme.colors.primaryPurple};
+      background-color: ${(props) => props.theme.colors.primary['500']};
       border: 1px solid transparent;
       color: #fff;
       font-weight: bold;
       &:hover {
-        background-color: #5d67c7;
+        background-color: ${(props) => props.theme.colors.primary['400']};
       }
     `;
   }
 
   return css`
     background-color: transparent;
-    border: 1px solid ${(props) => props.theme.colors.grey};
-    color: ${(props) => props.theme.colors.grey};
+    border: 1px solid ${(props) => props.theme.colors.grey['500']};
+    color: ${(props) => props.theme.colors.grey['500']};
   `;
 };
 

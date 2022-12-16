@@ -13,10 +13,10 @@ export const LoginContainer = styled.div`
 `;
 
 export const LoginWelcomeBox = styled.div`
-  background-color: #fff5c1;
+  background-color: ${(props) => props.theme.colors.accent};
   padding: 1em;
   min-width: 400px;
-  color: ${(props) => props.theme.colors.primaryPurple};
+  color: ${(props) => props.theme.colors.primary['500']};
   text-align: left;
 `;
 
@@ -47,7 +47,7 @@ export const WelcomeTextSpan = styled.span`
 `;
 
 export const LoginPrompt = styled.h1`
-  color: ${(props) => props.theme.colors.primaryPurple};
+  color: ${(props) => props.theme.colors.primary['500']};
 `;
 
 export const CTAText = styled.p`

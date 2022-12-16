@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const StyledInput = styled.input`
   border-radius: 10px;
-  border: 1px solid #9ba0cf;
+  border: 1px solid ${(props) => props.theme.colors.grey['400']};
   background: none;
   padding: 1em;
   width: 200px;

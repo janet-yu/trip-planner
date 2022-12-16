@@ -19,7 +19,7 @@ const DropDownItem = styled.button`
   border-bottom: 2px solid #d0d6ef;
 
   :hover {
-    background-color: ${(props) => '#E9ECF8'};
+    background-color: ${(props) => props.theme.colors.primary['50']};
     cursor: pointer;
   }
 `;
@@ -36,6 +36,12 @@ const ItemSubtitle = styled.p`
   margin: 0;
   color: #646464;
 `;
+
+type Item = {
+  title: string;
+  subtitle?: string;
+  value: string;
+};
 
 const DropDownContainer = styled.div``;
 
@@ -54,9 +60,9 @@ const DropDown = (props: any) => {
     },
   ];
 
-  const renderDropDown = (items) => {
+  const renderDropDown = (items: Item[]) => {
     return items.map((item) => (
-      <DropDownItem>
+      <DropDownItem role="option">
         <FontAwesomeIcon icon={faLocationDot} />
         <TextWrapper>
           <ItemTitle>{item.title}</ItemTitle>

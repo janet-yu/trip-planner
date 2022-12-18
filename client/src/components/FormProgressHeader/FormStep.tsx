@@ -1,12 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-
-/**
- * 1. Need to keep track of active step
- * 2. Need to have progress bars
- * 3. Need to account for mobile views (no progress bars shown, one step shown at a time)
- * 4. Make note of last form step, does not have progress bar
- */
+import { device } from '../../utils/mediaQueries';
 
 const StepIndicator = styled.div<{ active?: any; completed?: boolean }>`
   border-radius: 100%;
@@ -16,7 +10,6 @@ const StepIndicator = styled.div<{ active?: any; completed?: boolean }>`
   height: 15px;
   text-align: center;
   display: inline-block;
-  color: ${(props) => props.theme.colors.primary['500']};
 
   ${(props) =>
     props.active || props.completed
@@ -28,25 +21,30 @@ const StepIndicator = styled.div<{ active?: any; completed?: boolean }>`
           background: white;
           border-color: #aaa;
           color: #aaa;
-          color: ${props.theme.colors.primary['500']};
+          color: ${props.theme.colors.grey['500']};
         `}
+`;
+
+const Step = styled.li<{ active: boolean }>`
+  flex: 1 0 auto;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  display: ${(props) => (props.active ? 'flex' : 'none')};
+
+  @media ${device.mobileL} {
+    display: flex;
+  }
 `;
 
 const FormStep = (props: any) => {
   return (
-    <li
-      style={{
-        flex: '1 0 auto',
-        display: 'flex',
-        alignItems: 'center',
-        flexDirection: 'column',
-      }}
-    >
+    <Step active={props.active}>
       <StepIndicator active={props.active} completed={props.completed}>
         <p style={{ margin: 0 }}>{props.stepNumber}</p>
       </StepIndicator>
       <p style={{ marginTop: '5px' }}>{props.label}</p>
-    </li>
+    </Step>
   );
 };
 

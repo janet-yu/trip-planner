@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import FormStep from './FormStep';
+import { device } from '../../utils/mediaQueries';
 
 const Header = styled.nav<{ stepCount: number }>`
   padding: 1em;
@@ -16,6 +17,11 @@ const ProgressBarWrapper = styled.div<{ stepCount: number }>`
   grid-row: 1 / -1;
   top: 1.5rem;
   position: relative;
+  display: none;
+
+  @media ${device.mobileL} {
+    display: block;
+  }
 `;
 
 const ProgressBar = styled.div<{ stepCount: number; activeStep: number }>`

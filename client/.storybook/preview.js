@@ -1,6 +1,7 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '../src/Theme';
+import '../src/App.css';
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },

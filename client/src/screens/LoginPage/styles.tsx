@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { device } from '../../utils/mediaQueries';
 
 export const LoginPageContainer = styled.div`
   min-height: 100vh;
@@ -8,22 +9,37 @@ export const LoginPageContainer = styled.div`
 `;
 
 export const LoginContainer = styled.div`
-  align-self: center;
   display: flex;
+  flex-direction: column;
+  align-self: center;
+  min-height: 450px;
+  width: 75%;
+
+  @media ${device.laptop} {
+    flex-direction: row;
+    width: auto;
+  }
 `;
 
 export const LoginWelcomeBox = styled.div`
   background-color: ${(props) => props.theme.colors.accent};
   padding: 1em;
-  min-width: 400px;
   color: ${(props) => props.theme.colors.primary['500']};
   text-align: left;
+
+  @media ${device.laptop} {
+    width: 400px;
+  }
 `;
 
 export const LoginFormBox = styled.div`
-  min-width: 400px;
   border: 1px solid #ccc;
   padding: 3em;
+  text-align: center;
+
+  @media ${device.laptop} {
+    width: 400px;
+  }
 `;
 
 export const WelcomeTextWrapper = styled.div`
@@ -52,4 +68,5 @@ export const LoginPrompt = styled.h1`
 
 export const CTAText = styled.p`
   font-size: 0.8em;
+  margin: 1rem 0;
 `;

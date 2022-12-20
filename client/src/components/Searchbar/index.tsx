@@ -3,6 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import DropDown from './SearchDropDown';
+import { theme as Theme } from '../../Theme';
 
 const TextInput = styled.input`
   border: none;
@@ -32,17 +33,26 @@ type SearchbarProps = {
  * @param props
  */
 const Searchbar = (props: SearchbarProps) => {
-  const theme = useTheme();
+  const theme = useTheme() as typeof Theme;
   const { items } = props;
 
   return (
     <div>
-      <SearchbarContainer role="search">
+      <SearchbarContainer
+        role="search"
+        aria-label="Trip location search"
+        aria-description="Search for the city you'll be staying in for this trip"
+      >
         <FontAwesomeIcon
           icon={faMagnifyingGlass}
           style={{ width: 20, height: 20, color: theme.colors.primary['800'] }}
         />
-        <TextInput placeholder="Search" />
+        <TextInput
+          placeholder="Search"
+          name="location-search"
+          aria-label="Search"
+          role="searchbox"
+        />
       </SearchbarContainer>
       <DropDown />
     </div>

@@ -27,7 +27,23 @@ export const getFirstDayOfMonth = (month: number, year: number) => {
   return new Date(year, month, 1).getDay();
 };
 
-export const transformToDate = (dateComponents: {
+export const dateToComponents = (date: Date) => {
+  return {
+    day: date.getDate(),
+    month: date.getMonth(),
+    year: date.getFullYear(),
+  };
+};
+
+export const dateToString = (date: Date) => {
+  return dateComponentsToString({
+    day: date.getDate(),
+    month: date.getMonth(),
+    year: date.getFullYear(),
+  });
+};
+
+export const componentsToDate = (dateComponents: {
   day: number;
   month: number;
   year: number;
@@ -38,9 +54,23 @@ export const transformToDate = (dateComponents: {
   return new Date(dateString);
 };
 
+export const dateComponentsToString = (dateComponents: {
+  day: number;
+  month: number;
+  year: number;
+}) => {
+  const dateString = `${dateComponents.month + 1 < 10 ? '0' : ''}${
+    dateComponents.month + 1
+  }/${dateComponents.day < 10 ? '0' : ''}${dateComponents.day}/${
+    dateComponents.year
+  }`;
+
+  return dateString;
+};
+
 export const MONTHS = [
   'January',
-  'Feburary',
+  'February',
   'March',
   'April',
   'May',

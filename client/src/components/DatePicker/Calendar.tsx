@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import * as dateHelpers from '../../utils/dateHelpers';
 import useDetectOutsideClick from '../../hooks/useDetectOutsideClick';
@@ -130,22 +130,28 @@ const Calendar = (props: any) => {
    * 5. Keep track of the view selected (year, month, day)
    * 6. Generate appropriate years
    */
+  const initialDate = {
+    day: props.selectedDate.getDate(),
+    month: props.selectedDate.getMonth(),
+    year: props.selectedDate.getFullYear(),
+  };
+
   const ref = useRef(null);
-  const today = new Date();
-  const [selectedDate, setSelectedDate] = useState({
-    day: today.getDate(),
-    month: today.getMonth(),
-    year: today.getFullYear(),
-  });
+  const [selectedDate, setSelectedDate] = useState(initialDate);
   const [currentView, setCurrentView] = useState(CalendarView.Day);
 
+  useEffect(() => {
+    if (initialDate.day !== selectedDate.day) {
+      props.onDateChange(selectedDate);
+      props.setCalendarOpen(false);
+    }
+  }, [selectedDate]);
+
   const handleOutsideClick = () => {
-    // Save date
-    // Hide component
     props.setCalendarOpen(false);
   };
 
-  useDetectOutsideClick(ref, handleOutsideClick);
+  useDetectOutsideClick(ref, handleOutsideClick, selectedDate);
 
   const daysInMonth = dateHelpers.getMonthDays(
     selectedDate.month,

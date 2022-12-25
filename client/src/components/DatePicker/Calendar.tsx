@@ -35,12 +35,12 @@ const CalendarHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  color: ${(props) => props.theme.colors.primary["500"]};
+  color: ${(props) => props.theme.colors.primary["300"]};
 `;
 
 const NavigationButton = styled.button`
   font-size: 1rem;
-  color: ${(props) => props.theme.colors.primary["500"]};
+  color: ${(props) => props.theme.colors.primary["300"]};
   border-radius: 50px;
   ${sharedTransition}
   width: 20px;
@@ -112,7 +112,8 @@ const MonthOption = styled.div`
   ${sharedTransition}
   &:hover {
     cursor: pointer;
-    background: #eee;
+    background: ${(props) => props.theme.colors.primary["300"]};
+    color: #fff;
   }
 `;
 

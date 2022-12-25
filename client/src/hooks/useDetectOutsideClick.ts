@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 
 const useDetectOutsideClick = (ref, handleOutsideClick) => {
   useEffect(() => {
@@ -8,10 +8,10 @@ const useDetectOutsideClick = (ref, handleOutsideClick) => {
       }
     };
 
-    document.addEventListener('mousedown', detectClick);
+    document.addEventListener("mousedown", detectClick);
 
     return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener("mousedown", detectClick);
     };
   }, [ref, handleOutsideClick]);
 };

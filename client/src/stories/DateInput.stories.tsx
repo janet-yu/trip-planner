@@ -1,9 +1,9 @@
 import React from "react";
-import { default as DateInput } from "../components/DatePicker/DateInput";
+import { default as DatePicker } from "../components/DatePicker";
 
 export default {
   title: "DateInput",
-  component: DateInput,
+  component: DatePicker,
 };
 
-export const DateInputComponent = () => <DateInput />;
+export const DateInputComponent = () => <DatePicker />;

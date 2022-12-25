@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import styled, { css } from 'styled-components';
-import * as dateHelpers from '../../utils/dateHelpers';
-import useDetectOutsideClick from '../../hooks/useDetectOutsideClick';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import React, { useState, useEffect, useRef } from "react";
+import styled, { css } from "styled-components";
+import * as dateHelpers from "../../utils/dateHelpers";
+import useDetectOutsideClick from "../../hooks/useDetectOutsideClick";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretLeft, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 
 const sharedTransition = css`
   transition: background 0.2s ease-in-out;
@@ -25,7 +25,7 @@ const WeekHeaderWrapper = styled.div`
 
 const WeekdayText = styled.p`
   font-weight: bold;
-  color: ${(props) => props.theme.colors.primary['500']};
+  color: ${(props) => props.theme.colors.primary["500"]};
   padding: 3px;
   font-size: 0.8rem;
 `;
@@ -35,19 +35,19 @@ const CalendarHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  color: ${(props) => props.theme.colors.primary['500']};
+  color: ${(props) => props.theme.colors.primary["500"]};
 `;
 
 const NavigationButton = styled.button`
   font-size: 1rem;
-  color: ${(props) => props.theme.colors.primary['500']};
+  color: ${(props) => props.theme.colors.primary["500"]};
   border-radius: 50px;
   ${sharedTransition}
   width: 20px;
   height: 20px;
   &:hover {
     cursor: pointer;
-    background: ${(props) => props.theme.colors.primary['50']};
+    background: ${(props) => props.theme.colors.primary["50"]};
   }
 `;
 
@@ -77,8 +77,8 @@ const DateIndicator = styled.span<{ weekday?: number; selected?: boolean }>`
   width: 2ch;
   height: 2ch;
   background: ${(props) =>
-    props.selected ? props.theme.colors.primary['500'] : 'transparent'};
-  color: ${(props) => (props.selected ? 'white' : 'black')};
+    props.selected ? props.theme.colors.primary["500"] : "transparent"};
+  color: ${(props) => (props.selected ? "white" : "black")};
   font-size: 12px;
 
   &:hover {
@@ -142,7 +142,8 @@ const Calendar = (props: any) => {
 
   useEffect(() => {
     if (initialDate.day !== selectedDate.day) {
-      props.onDateChange(selectedDate);
+      const newDate = dateHelpers.componentsToDate(selectedDate);
+      props.onDateChange(newDate);
       props.setCalendarOpen(false);
     }
   }, [selectedDate]);
@@ -151,7 +152,7 @@ const Calendar = (props: any) => {
     props.setCalendarOpen(false);
   };
 
-  useDetectOutsideClick(ref, handleOutsideClick, selectedDate);
+  useDetectOutsideClick(ref, handleOutsideClick);
 
   const daysInMonth = dateHelpers.getMonthDays(
     selectedDate.month,

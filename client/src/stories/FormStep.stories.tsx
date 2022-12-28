@@ -1,5 +1,5 @@
 import React from 'react';
-import FormStep from '../components/FormProgressHeader/FormStep';
+import FormStep from '../components/FormStepper/FormStep';
 
 export default {
   title: 'FormStep',

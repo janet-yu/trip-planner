@@ -9,17 +9,17 @@
  * 1. Date input
  * 3. Date calendar
  */
-import React, { useState } from "react";
-import Input from "./DateInput";
-import Calendar from "./Calendar";
-import styled from "styled-components";
+import React, { useState } from 'react';
+import Input from './DateInput';
+import Calendar from './Calendar';
+import styled from 'styled-components';
 
 const DatePickerContainer = styled.div`
   position: relative;
 `;
 
 // Refactor to render Calendar and Input separately here
-const DatePicker = (props) => {
+const DatePicker = () => {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -28,8 +28,8 @@ const DatePicker = (props) => {
       {calendarOpen && (
         <div
           style={{
-            position: "absolute",
-            top: "100%",
+            position: 'absolute',
+            top: '100%',
           }}
         >
           <Calendar

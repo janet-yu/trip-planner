@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import DropDown from './SearchDropDown';
+import DropDown, { Item } from './SearchDropDown';
 import { theme as Theme } from '../../Theme';
+
+const SearchContainer = styled.div`
+  position: relative;
+`;
 
 const TextInput = styled.input`
   border: none;
@@ -14,6 +18,7 @@ const TextInput = styled.input`
   padding-left: 0.5em;
   font-size: 1.5em;
   color: ${(props) => props.theme.colors.primary['800']};
+  background: none;
 `;
 
 const SearchbarContainer = styled.div`
@@ -24,24 +29,40 @@ const SearchbarContainer = styled.div`
 `;
 
 type SearchbarProps = {
-  onSelect?: any;
-  onChange?: any;
-  items?: any[];
+  setFieldValue: (
+    field: string,
+    value: any,
+    shouldValidate?: boolean | undefined
+  ) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  items: Item[] | undefined;
+  value: string;
+  clearSuggestions: any;
 };
+
 /**
  * Searchabr dropdown items
  * @param props
  */
 const Searchbar = (props: SearchbarProps) => {
   const theme = useTheme() as typeof Theme;
-  const { items } = props;
+  const [showDropDown, setShowDropDown] = useState(false);
+  const { items, value, onChange, setFieldValue, clearSuggestions } = props;
+
+  useEffect(() => {
+    if (items?.length) {
+      setShowDropDown(true);
+    } else {
+      setShowDropDown(false);
+    }
+  }, [items]);
 
   return (
-    <div>
+    <SearchContainer>
       <SearchbarContainer
         role="search"
-        aria-label="Trip location search"
-        aria-description="Search for the city you'll be staying in for this trip"
+        aria-label="Location search"
+        aria-description="Search for the location"
       >
         <FontAwesomeIcon
           icon={faMagnifyingGlass}
@@ -49,13 +70,22 @@ const Searchbar = (props: SearchbarProps) => {
         />
         <TextInput
           placeholder="Search"
-          name="location-search"
+          name="place.value"
           aria-label="Search"
           role="searchbox"
+          value={value}
+          onChange={onChange}
         />
       </SearchbarContainer>
-      <DropDown />
-    </div>
+      {items && showDropDown && (
+        <DropDown
+          items={items}
+          setFieldValue={setFieldValue}
+          setShowDropDown={setShowDropDown}
+          clearSuggestions={clearSuggestions}
+        />
+      )}
+    </SearchContainer>
   );
 };
 

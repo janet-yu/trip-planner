@@ -46,7 +46,7 @@ type FormProgressHeaderProps = {
 
 // Shoutout to https://www.telerik.com/kendo-react-ui/components/form/multi-step-form/
 // for help!
-const FormProgressHeader = (props: FormProgressHeaderProps) => {
+const FormStepper = (props: FormProgressHeaderProps) => {
   return (
     <Header stepCount={props.steps.length}>
       <ol
@@ -63,6 +63,7 @@ const FormProgressHeader = (props: FormProgressHeaderProps) => {
             completed={props.activeStep > idx}
             label={step.label}
             stepNumber={idx + 1}
+            key={idx}
           />
         ))}
       </ol>
@@ -76,4 +77,4 @@ const FormProgressHeader = (props: FormProgressHeaderProps) => {
   );
 };
 
-export default FormProgressHeader;
+export default FormStepper;

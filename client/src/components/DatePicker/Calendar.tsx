@@ -183,7 +183,7 @@ const Calendar = (props: any) => {
 
   const renderWeekHeader = () => {
     return dateHelpers.WEEKDAYS.map((day) => (
-      <WeekdayText>{day.substring(0, 3)}</WeekdayText>
+      <WeekdayText key={day}>{day.substring(0, 3)}</WeekdayText>
     ));
   };
 
@@ -197,6 +197,7 @@ const Calendar = (props: any) => {
           selected={selectedDate.day === i + 1}
           onClick={() => handleDayClick(i + 1)}
           role="button"
+          key={i}
         >
           {i + 1}
         </DateIndicator>
@@ -316,13 +317,13 @@ const Calendar = (props: any) => {
   return (
     <CalendarContainer ref={ref}>
       <CalendarHeader>
-        <NavigationButton onClick={handlePrevClick}>
+        <NavigationButton onClick={handlePrevClick} type="button">
           <FontAwesomeIcon icon={faCaretLeft} />
         </NavigationButton>
-        <MonthYearButton onClick={handleCalendarViewClick}>
+        <MonthYearButton onClick={handleCalendarViewClick} type="button">
           {renderHeader()}
         </MonthYearButton>
-        <NavigationButton onClick={handleNextClick}>
+        <NavigationButton onClick={handleNextClick} type="button">
           <FontAwesomeIcon icon={faCaretRight} />
         </NavigationButton>
       </CalendarHeader>

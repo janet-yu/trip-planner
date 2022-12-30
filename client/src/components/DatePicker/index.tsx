@@ -9,7 +9,7 @@
  * 1. Date input
  * 3. Date calendar
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Input from './DateInput';
 import Calendar from './Calendar';
 import styled from 'styled-components';
@@ -19,9 +19,14 @@ const DatePickerContainer = styled.div`
 `;
 
 // Refactor to render Calendar and Input separately here
-const DatePicker = () => {
+const DatePicker = (props: any) => {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  // form on change
+  useEffect(() => {
+    props.onChange(props.name, selectedDate);
+  }, [selectedDate]);
 
   return (
     <DatePickerContainer>
@@ -43,6 +48,7 @@ const DatePicker = () => {
         selectedDate={selectedDate}
         setCalendarOpen={setCalendarOpen}
         onDateChange={setSelectedDate}
+        name={props.name}
       />
     </DatePickerContainer>
   );

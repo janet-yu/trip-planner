@@ -38,6 +38,7 @@ const Input = styled.input`
   padding: 0.8rem;
   flex: 1;
   width: 100%;
+  background: none;
 
   &:focus {
     outline: none;
@@ -123,17 +124,16 @@ const DateInput = (props: any) => {
 
   return (
     <DateInputContainer focused={inputFocused}>
-      <CalendarButton onClick={handleCalendarClick}>
+      <CalendarButton onClick={handleCalendarClick} type="button">
         <FontAwesomeIcon icon={faCalendar} />
       </CalendarButton>
       <Input
-        type="tel"
         value={inputValue}
         onFocus={onInputFocus}
         onBlur={onInputBlur}
         onChange={handleChange}
-        pattern={'[0-9]'}
         ref={ref}
+        name={props.name}
       />
     </DateInputContainer>
   );

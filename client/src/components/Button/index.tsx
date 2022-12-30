@@ -38,7 +38,7 @@ const StyledButton = styled.button<ButtonProps>`
 `;
 
 type ButtonProps = {
-  onClick: MouseEventHandler;
+  onClick?: MouseEventHandler;
   variant: 'primary' | 'secondary' | 'selected';
   children?: any;
   my?: number;

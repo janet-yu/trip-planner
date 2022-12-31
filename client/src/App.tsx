@@ -5,11 +5,9 @@ import LoginPage from './screens/LoginPage';
 
 function App() {
   return (
-    <Theme>
-      <div className="App">
-        <LoginPage />
-      </div>
-    </Theme>
+    <div className="App">
+      <LoginPage />
+    </div>
   );
 }
 

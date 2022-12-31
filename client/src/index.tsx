@@ -2,11 +2,30 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import {
+  createRoutesFromElements,
+  createBrowserRouter,
+  Route,
+  RouterProvider,
+} from 'react-router-dom';
+import PlanTripPage from './screens/PlanTrip';
+import { Theme } from './Theme';
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route>
+      <Route index element={<App />} />
+      <Route path="plan-trip" element={<PlanTripPage />} />
+    </Route>
+  )
+);
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render(
   <React.StrictMode>
-    <App />
+    <Theme>
+      <RouterProvider router={router} />
+    </Theme>
   </React.StrictMode>
 );
 

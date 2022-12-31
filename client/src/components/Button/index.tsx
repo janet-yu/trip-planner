@@ -35,6 +35,8 @@ const StyledButton = styled.button<ButtonProps>`
   ${(props) => props.mBottom && `margin-bottom: ${props.my}px;`}
   ${(props) => props.my && `margin: ${props.my}px 0px;`}
   ${(props) => props.mx && `margin: 0px ${props.mx}px;`}
+  ${(props) => props.mLeft && `margin: 0px 0px 0px ${props.mLeft}px;`}
+  ${(props) => props.mRight && `margin: 0px ${props.mRight}px 0px 0px;`}
 `;
 
 type ButtonProps = {

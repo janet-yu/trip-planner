@@ -29,6 +29,7 @@ const ProgressBar = styled.div<{ stepCount: number; activeStep: number }>`
     100% / ${(props) => props.stepCount - 1} * ${(props) => props.activeStep}
   );
   height: 3px;
+  transition: width 0.5s ease-in;
   background-color: ${(props) => props.theme.colors.primary['800']};
 `;
 

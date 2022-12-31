@@ -12,7 +12,7 @@ const Header = styled.nav<{ stepCount: number }>`
 
 const ProgressBarWrapper = styled.div<{ stepCount: number }>`
   height: 3px;
-  background-color: #eee;
+  background-color: ${(props) => props.theme.colors.grey['100']};
   grid-column: 2 / ${(props) => props.stepCount * 2};
   grid-row: 1 / -1;
   top: 1.5rem;

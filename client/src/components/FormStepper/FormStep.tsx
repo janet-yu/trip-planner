@@ -6,8 +6,8 @@ const StepIndicator = styled.div<{ active?: any; completed?: boolean }>`
   border-radius: 100%;
   border: 2px solid ${(props) => props.theme.colors.primary['500']};
   padding: 15px;
-  width: 15px;
-  height: 15px;
+  width: 12px;
+  height: 12px;
   text-align: center;
   display: inline-block;
   transition: background 0.5s ease-in;
@@ -20,8 +20,7 @@ const StepIndicator = styled.div<{ active?: any; completed?: boolean }>`
         `
       : css`
           background: white;
-          border-color: #aaa;
-          color: #aaa;
+          border-color: ${props.theme.colors.grey['200']};
           color: ${props.theme.colors.grey['500']};
         `}
 `;
@@ -38,13 +37,31 @@ const Step = styled.li<{ active: boolean }>`
   }
 `;
 
-const FormStep = (props: any) => {
+const Label = styled.p<{ active: boolean; completed: boolean }>`
+  margin-top: 10px;
+  color: ${(props) =>
+    props.active || props.completed
+      ? props.theme.colors.primary['500']
+      : props.theme.colors.grey['400']};
+  font-weight: ${(props) => (props.active ? 'bold' : 'regular')};
+`;
+
+type FormStepProps = {
+  active: boolean;
+  stepNumber: number;
+  completed: boolean;
+  label: string;
+};
+
+const FormStep = (props: FormStepProps) => {
   return (
     <Step active={props.active}>
       <StepIndicator active={props.active} completed={props.completed}>
-        <p style={{ margin: 0 }}>{props.stepNumber}</p>
+        <p>{props.stepNumber}</p>
       </StepIndicator>
-      <p style={{ marginTop: '5px' }}>{props.label}</p>
+      <Label active={props.active} completed={props.completed}>
+        {props.label}
+      </Label>
     </Step>
   );
 };

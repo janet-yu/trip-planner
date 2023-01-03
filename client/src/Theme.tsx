@@ -12,7 +12,7 @@ const theme = {
     },
     accent: '#FFF5C1',
     grey: {
-      [50]: '#F5F6F6',
+      [50]: '#F5F5F5',
       [100]: '#D6D9E1',
       [200]: '#B2BACD',
       [300]: '#9BA2B4',

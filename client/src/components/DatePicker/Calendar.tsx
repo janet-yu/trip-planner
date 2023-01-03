@@ -71,20 +71,31 @@ const CalendarViewGrid = styled.div<{ view: CalendarView }>`
   flex: 1;
 `;
 
-const DateIndicator = styled.span<{ weekday?: number; selected?: boolean }>`
+const DateIndicator = styled.button<{
+  weekday?: number;
+  selected?: boolean;
+  disabled?: boolean;
+}>`
   border-radius: 100%;
   padding: 5px;
-  width: 2ch;
-  height: 2ch;
   background: ${(props) =>
     props.selected ? props.theme.colors.primary['500'] : 'transparent'};
   color: ${(props) => (props.selected ? 'white' : 'black')};
   font-size: 12px;
-
   &:hover {
     background: #eee;
     cursor: pointer;
   }
+
+  ${(props) =>
+    props.disabled &&
+    css`
+      color: ${(props) => props.theme.colors.grey['300']};
+      &:hover {
+        background: transparent;
+        cursor: auto;
+      }
+    `}
 
   ${(props) =>
     props.weekday &&
@@ -122,7 +133,14 @@ enum CalendarView {
   Month,
 }
 
-const Calendar = (props: any) => {
+type CalendarPropsType = {
+  selectedDate: Date;
+  onDateChange: React.Dispatch<React.SetStateAction<Date>>;
+  setCalendarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  disableDatesBefore?: Date;
+};
+
+const Calendar = (props: CalendarPropsType) => {
   /**
    * 1. Keep track of selected date
    * 2. Render the current date
@@ -191,13 +209,24 @@ const Calendar = (props: any) => {
     let dates = [];
 
     for (let i = 0; i < daysInMonth; i++) {
+      let disabled = false;
+      if (props.disableDatesBefore) {
+        const currentDate = new Date(
+          `${selectedDate.month + 1}-${i + 1}-${selectedDate.year}`
+        );
+        disabled =
+          currentDate.setHours(0, 0, 0, 0) <
+          props.disableDatesBefore.setHours(0, 0, 0, 0);
+      }
+
       dates.push(
         <DateIndicator
           weekday={i === 0 ? firstDayOfMonth : undefined}
-          selected={selectedDate.day === i + 1}
+          selected={selectedDate.day === i + 1 && !disabled}
           onClick={() => handleDayClick(i + 1)}
-          role="button"
           key={i}
+          disabled={disabled}
+          type="button"
         >
           {i + 1}
         </DateIndicator>

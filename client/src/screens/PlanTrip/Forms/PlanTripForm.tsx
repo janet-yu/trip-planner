@@ -5,17 +5,26 @@ import WhereForm from './WhereForm';
 import WhenForm from './WhenForm';
 import { Formik } from 'formik';
 import Button from '../../../components/Button';
+import axios from 'axios';
+import * as Yup from 'yup';
 
 const FormContainer = styled.div`
   background-color: #f7f7fb;
   border-radius: 18px;
+  padding: 2rem;
 `;
 
 const Form = styled.form`
   min-height: 300px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export type FormState = {
@@ -27,7 +36,21 @@ export type FormState = {
   endDate: Date | null;
 };
 
-const PlanTripForm = (props: any) => {
+const whereFormSchema = Yup.object({
+  place: Yup.object({
+    id: Yup.string().required(),
+    value: Yup.string().required('Please select a location'),
+  }),
+});
+
+const whenFormSchema = Yup.object({
+  startDate: Yup.date().required(),
+  endDate: Yup.date().required(),
+});
+
+const validationSchemas = [whereFormSchema, whenFormSchema];
+
+const PlanTripForm = () => {
   const formSteps = [
     {
       label: 'Where?',
@@ -47,12 +70,18 @@ const PlanTripForm = (props: any) => {
     startDate: null,
     endDate: null,
   };
-  // @todo: create initial form state
   const [currentStep, setCurrentStep] = useState(0);
   const isLastStep = currentStep === formSteps.length - 1;
 
   const handleSubmitData = (values: any) => {
-    console.log('submit data');
+    const data = {
+      title: values.place.value,
+      placeReferenceId: values.place.id,
+      startDate: values.startDate,
+      endDate: values.endDate,
+    };
+
+    axios.post(`${process.env.REACT_APP_API_URL}/trips` as string, data);
   };
 
   const handleNextStep = () => {
@@ -85,6 +114,7 @@ const PlanTripForm = (props: any) => {
           <WhenForm
             handleNextStep={handleNextStep}
             setFieldValue={setFieldValue}
+            formValues={formValues}
           />
         );
     }
@@ -95,6 +125,7 @@ const PlanTripForm = (props: any) => {
       <FormStepper steps={formSteps} activeStep={currentStep} />
       <Formik
         initialValues={initialState}
+        validationSchema={validationSchemas[currentStep]}
         onSubmit={(values) => {
           if (isLastStep) {
             handleSubmitData(values);
@@ -103,19 +134,24 @@ const PlanTripForm = (props: any) => {
           }
         }}
       >
-        {({ handleSubmit, setFieldValue, values }) => (
+        {({ handleSubmit, setFieldValue, values, errors }) => (
           <Form onSubmit={handleSubmit}>
             {renderCurrentStep(values, setFieldValue)}
-            <Button
-              variant="primary"
-              type="submit"
-              style={{
-                alignSelf: 'center',
-                margin: '1rem',
-              }}
-            >
-              Continue
-            </Button>
+            {errors.place ? <p>{errors.place.value}</p> : <p></p>}
+            <ButtonContainer>
+              {currentStep > 0 && (
+                <Button
+                  variant="primary"
+                  type="button"
+                  onClick={handlePreviousStep}
+                >
+                  Back
+                </Button>
+              )}
+              <Button variant="primary" type="submit" mLeft={8}>
+                Continue
+              </Button>
+            </ButtonContainer>
           </Form>
         )}
       </Formik>

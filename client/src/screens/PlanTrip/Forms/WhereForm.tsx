@@ -1,18 +1,11 @@
 import React from 'react';
-import { useLoadScript, LoadScriptProps } from '@react-google-maps/api';
 import usePlacesAutocomplete from 'use-places-autocomplete';
-import styled from 'styled-components';
 import Searchbar from '../../../components/Searchbar';
 import { Field } from 'formik';
-
-const libraries: LoadScriptProps['libraries'] = ['places'];
+import useUseLoadScript from '../../../hooks/useUseLoadScript';
 
 const Container = ({ formValues, setFieldValue }: WhereFormProps) => {
-  // 1. Load the Google API
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY || '', // @todo: figure out how to address dis
-    libraries,
-  });
+  const { isLoaded, loadError } = useUseLoadScript(['places']);
 
   if (isLoaded)
     return <WhereForm formValues={formValues} setFieldValue={setFieldValue} />;

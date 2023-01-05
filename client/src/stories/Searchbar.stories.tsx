@@ -6,4 +6,12 @@ export default {
   component: SearchbarComponent,
 };
 
-export const Searchbar = () => <SearchbarComponent />;
+export const Searchbar = () => (
+  <SearchbarComponent
+    setFieldValue={() => {}}
+    items={[]}
+    onChange={() => {}}
+    value={''}
+    clearSuggestions={() => {}}
+  />
+);

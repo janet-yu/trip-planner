@@ -18,31 +18,39 @@ const DatePickerContainer = styled.div`
   position: relative;
 `;
 
+const InputLabel = styled.label`
+  margin-bottom: 4px;
+  display: inline-block;
+`;
+
+const CalendarContainer = styled.div`
+  position: absolute;
+  top: 100%;
+`;
+
 // Refactor to render Calendar and Input separately here
 const DatePicker = (props: any) => {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  // form on change
   useEffect(() => {
     props.onChange(props.name, selectedDate);
   }, [selectedDate]);
 
   return (
-    <DatePickerContainer>
+    <DatePickerContainer style={props.styles}>
       {calendarOpen && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '100%',
-          }}
-        >
+        <CalendarContainer>
           <Calendar
             setCalendarOpen={setCalendarOpen}
             onDateChange={setSelectedDate}
             selectedDate={selectedDate}
+            disableDatesBefore={props.disableDatesBefore}
           />
-        </div>
+        </CalendarContainer>
+      )}
+      {props.label && (
+        <InputLabel htmlFor={props.name}>{props.label}</InputLabel>
       )}
       <Input
         selectedDate={selectedDate}

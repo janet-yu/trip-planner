@@ -2,15 +2,15 @@ import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { MouseEventHandler } from 'react';
 import styled from 'styled-components';
-import { SpacingProps } from '../types';
-import { generateCSSSpacingProps } from '../types';
+import { SpacingProps } from '../utils';
+import { generateSpacingProps } from '../utils';
 
 const Card = styled.div<Partial<PlaceCardProps>>`
   border-radius: 16px;
   background: ${(props) => props.theme.colors.grey['50']};
   display: flex;
   overflow: hidden;
-  ${(props) => generateCSSSpacingProps(props)}
+  ${(props) => generateSpacingProps(props)}
 `;
 
 const CardDetails = styled.div`

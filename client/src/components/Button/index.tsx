@@ -1,8 +1,12 @@
 import React, { MouseEventHandler } from 'react';
 import styled, { css } from 'styled-components';
+import { generateSpacingProps, SpacingProps } from '../utils';
 
 // @todo: refactor how selected buttons are rendered?
-const variantStyles = (variant: 'primary' | 'secondary' | 'selected') => {
+const variantStyles = (
+  variant: 'primary' | 'secondary' | 'selected',
+  bold: boolean
+) => {
   if (variant === 'primary' || variant === 'selected') {
     return css`
       background-color: ${(props) => props.theme.colors.primary['500']};
@@ -17,7 +21,8 @@ const variantStyles = (variant: 'primary' | 'secondary' | 'selected') => {
 
   return css`
     background-color: transparent;
-    border: 1px solid ${(props) => props.theme.colors.grey['500']};
+    border: ${bold ? '4px' : '1px'} solid
+      ${(props) => props.theme.colors.grey['500']};
     color: ${(props) => props.theme.colors.grey['500']};
   `;
 };
@@ -30,26 +35,17 @@ const StyledButton = styled.button<ButtonProps>`
   &:hover {
     cursor: pointer;
   }
-  ${(props) => variantStyles(props.variant)}
-  ${(props) => props.mTop && `margin-top: ${props.my}px;`}
-  ${(props) => props.mBottom && `margin-bottom: ${props.my}px;`}
-  ${(props) => props.my && `margin: ${props.my}px 0px;`}
-  ${(props) => props.mx && `margin: 0px ${props.mx}px;`}
-  ${(props) => props.mLeft && `margin: 0px 0px 0px ${props.mLeft}px;`}
-  ${(props) => props.mRight && `margin: 0px ${props.mRight}px 0px 0px;`}
+
+  ${(props) => variantStyles(props.variant, props.bold || false)}
+  ${(props) => generateSpacingProps(props)}
 `;
 
 type ButtonProps = {
   onClick?: MouseEventHandler;
   variant: 'primary' | 'secondary' | 'selected';
+  bold?: boolean;
   children?: any;
-  my?: number;
-  mx?: number;
-  mTop?: number;
-  mBottom?: number;
-  mLeft?: number;
-  mRight?: number;
-};
+} & SpacingProps;
 
 // Don't use React.HTMLProps<HTMLButtonElement> lol
 // https://github.com/typescript-cheatsheets/react/issues/128

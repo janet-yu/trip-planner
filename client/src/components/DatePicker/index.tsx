@@ -57,6 +57,7 @@ const DatePicker = (props: any) => {
         setCalendarOpen={setCalendarOpen}
         onDateChange={setSelectedDate}
         name={props.name}
+        variant={props.variant || 'primary'}
       />
     </DatePickerContainer>
   );

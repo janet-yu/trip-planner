@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 import * as dateHelpers from '../../utils/dateHelpers';
 
-const DateInputContainer = styled.div<{ focused?: boolean }>`
+const DateInputContainer = styled.div<{ focused?: boolean; variant?: string }>`
   display: flex;
   align-items: center;
   border: 2px solid transparent;
@@ -12,6 +12,14 @@ const DateInputContainer = styled.div<{ focused?: boolean }>`
   border-radius: 0.2rem;
   max-width: 200px;
   position: relative;
+
+  ${(props) =>
+    props.variant === 'secondary' &&
+    css`
+      background: ${(props) => props.theme.colors.primary['50']};
+      border-radius: 8px;
+      border-bottom: 2px solid transparent;
+    `}
 
   ${(props) =>
     props.focused &&
@@ -77,8 +85,6 @@ const DateInput = (props: any) => {
 
     const currentValue = evt.target.value;
 
-    console.log({ currentValue });
-
     // 1. Remove any non numeric input
     const regex = /[^0-9]+/gi;
     const sanitizedValue = currentValue.replace(regex, '');
@@ -123,7 +129,7 @@ const DateInput = (props: any) => {
   };
 
   return (
-    <DateInputContainer focused={inputFocused}>
+    <DateInputContainer focused={inputFocused} variant={props.variant}>
       <CalendarButton onClick={handleCalendarClick} type="button">
         <FontAwesomeIcon icon={faCalendar} />
       </CalendarButton>

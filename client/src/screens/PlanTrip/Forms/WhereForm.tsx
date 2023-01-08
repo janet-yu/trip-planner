@@ -3,9 +3,10 @@ import usePlacesAutocomplete from 'use-places-autocomplete';
 import Searchbar from '../../../components/Searchbar';
 import { Field } from 'formik';
 import useUseLoadScript from '../../../hooks/useUseLoadScript';
+import { Item } from '../../../components/Searchbar/SearchDropDown';
 
 const Container = ({ formValues, setFieldValue }: WhereFormProps) => {
-  const { isLoaded, loadError } = useUseLoadScript(['places']);
+  const { isLoaded, loadError } = useUseLoadScript();
 
   if (isLoaded)
     return <WhereForm formValues={formValues} setFieldValue={setFieldValue} />;
@@ -19,7 +20,6 @@ type WhereFormProps = {
 
 const WhereForm = ({ formValues, setFieldValue }: WhereFormProps) => {
   const {
-    value,
     setValue,
     suggestions: { status, data },
     clearSuggestions,
@@ -33,6 +33,12 @@ const WhereForm = ({ formValues, setFieldValue }: WhereFormProps) => {
     };
   });
 
+  const handleDropDownItemClick = (item: Item) => {
+    setFieldValue('place.id', item.value);
+    setFieldValue('place.value', item.title);
+    clearSuggestions();
+  };
+
   return (
     <Field>
       {(fieldProps: any) => (
@@ -42,9 +48,9 @@ const WhereForm = ({ formValues, setFieldValue }: WhereFormProps) => {
             fieldProps.field.onChange(e);
             setValue(e.target.value);
           }}
-          setFieldValue={setFieldValue}
+          handleItemClick={handleDropDownItemClick}
           items={transformDataToDropdownItems}
-          clearSuggestions={clearSuggestions}
+          inputName="place.value"
         />
       )}
     </Field>

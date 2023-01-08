@@ -8,10 +8,10 @@ export default {
 
 export const Searchbar = () => (
   <SearchbarComponent
-    setFieldValue={() => {}}
+    inputName="name"
+    handleItemClick={() => {}}
     items={[]}
     onChange={() => {}}
     value={''}
-    clearSuggestions={() => {}}
   />
 );

@@ -14,11 +14,17 @@ const ToText = styled.p`
 `;
 
 const WhenForm = (props: any) => {
+  const { formValues } = props;
+
   return (
     <FormContainer>
       <Datepicker name="startDate" onChange={props.setFieldValue} />
       <ToText>to</ToText>
-      <Datepicker name="endDate" onChange={props.setFieldValue} />
+      <Datepicker
+        name="endDate"
+        onChange={props.setFieldValue}
+        disableDatesBefore={formValues.startDate}
+      />
     </FormContainer>
   );
 };

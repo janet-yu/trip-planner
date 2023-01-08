@@ -7,9 +7,9 @@ export default {
 };
 
 export const ActiveFormStep = () => (
-  <FormStep active={true} label={'City'} stepNumber={1} />
+  <FormStep active={true} label={'City'} stepNumber={1} completed={false} />
 );
 
 export const InactiveFormStep = () => (
-  <FormStep active={false} label={'City'} stepNumber={1} />
+  <FormStep active={false} label={'City'} stepNumber={1} completed={false} />
 );

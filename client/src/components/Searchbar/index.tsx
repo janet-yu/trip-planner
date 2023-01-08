@@ -29,15 +29,11 @@ const SearchbarContainer = styled.div`
 `;
 
 type SearchbarProps = {
-  setFieldValue: (
-    field: string,
-    value: any,
-    shouldValidate?: boolean | undefined
-  ) => void;
+  inputName: string;
+  handleItemClick: (item: Item) => void;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   items: Item[] | undefined;
   value: string;
-  clearSuggestions: any;
 };
 
 /**
@@ -47,7 +43,7 @@ type SearchbarProps = {
 const Searchbar = (props: SearchbarProps) => {
   const theme = useTheme() as typeof Theme;
   const [showDropDown, setShowDropDown] = useState(false);
-  const { items, value, onChange, setFieldValue, clearSuggestions } = props;
+  const { inputName, items, value, onChange, handleItemClick } = props;
 
   useEffect(() => {
     if (items?.length) {
@@ -70,7 +66,7 @@ const Searchbar = (props: SearchbarProps) => {
         />
         <TextInput
           placeholder="Search"
-          name="place.value"
+          name={inputName}
           aria-label="Search"
           role="searchbox"
           value={value}
@@ -80,9 +76,8 @@ const Searchbar = (props: SearchbarProps) => {
       {items && showDropDown && (
         <DropDown
           items={items}
-          setFieldValue={setFieldValue}
+          handleItemClick={handleItemClick}
           setShowDropDown={setShowDropDown}
-          clearSuggestions={clearSuggestions}
         />
       )}
     </SearchContainer>

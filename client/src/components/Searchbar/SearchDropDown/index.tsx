@@ -56,39 +56,29 @@ const DropDownContainer = styled.div`
   box-shadow: 0px 0px 5px #ddd;
   background-color: #fff;
   width: 100%;
+  z-index: 100;
 `;
 
 type DropDownProps = {
   items: Item[];
-  setFieldValue: (
+  handleItemClick: (item: Item) => void;
+  setFieldValue?: (
     field: string,
     value: any,
     shouldValidate?: boolean | undefined
   ) => void;
   setShowDropDown: React.Dispatch<React.SetStateAction<boolean>>;
-  clearSuggestions: any;
 };
 
-const DropDown = ({
-  items,
-  setFieldValue,
-  setShowDropDown,
-  clearSuggestions,
-}: DropDownProps) => {
+const DropDown = ({ items, handleItemClick }: DropDownProps) => {
   const renderDropDown = (items: Item[]) => {
-    const handleOnClick = (item: Item) => {
-      setFieldValue('place.id', item.value);
-      setFieldValue('place.value', item.title);
-      setShowDropDown(false);
-      clearSuggestions();
-    };
-
     return items.map((item, idx) => (
       <DropDownItem
         role="option"
         lastItem={idx === items.length - 1}
         type="button"
-        onClick={() => handleOnClick(item)}
+        onClick={() => handleItemClick(item)}
+        key={idx}
       >
         <FontAwesomeIcon icon={faLocationDot} />
         <TextWrapper>

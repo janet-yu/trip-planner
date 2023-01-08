@@ -16,6 +16,8 @@ const CalendarContainer = styled.div`
   width: 280px;
   text-align: center;
   padding: 1em;
+  z-index: 100;
+  position: relative;
 `;
 
 const WeekHeaderWrapper = styled.div`

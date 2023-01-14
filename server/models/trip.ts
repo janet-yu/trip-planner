@@ -3,10 +3,22 @@ import mongoose, { model, Schema } from 'mongoose';
 const tripSchema = new Schema(
   {
     title: String,
-    placeReferenceId: String, // This'll help us populate trip locatino details
+    placeReferenceId: String, // This'll help us populate trip location details
+    accommodations: [
+      {
+        referenceId: String,
+        checkinDate: Date,
+        checkoutDate: Date,
+      },
+    ], // This represents where the user is staying, which can be multiple places
     startDate: Date,
     endDate: Date,
-    activities: Array,
+    itinerary: [
+      {
+        referenceId: String,
+        date: Date,
+      },
+    ],
     people: Array,
     userId: String,
   },

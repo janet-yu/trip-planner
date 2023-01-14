@@ -39,14 +39,24 @@ tripRouter.get('/:id', async (req, res) => {
 
 tripRouter.patch('/:id', async (req, res) => {
   const { id } = req.params;
+  const trip = await Trip.findById(id);
+  const updates = {};
 
-  const updatedTrip = await Trip.findByIdAndUpdate(
-    id,
-    {
-      ...req.body,
-    },
-    { new: true }
-  );
+  // https://medium.com/@isuru89/a-better-way-to-implement-http-patch-operation-in-rest-apis-721396ac82bf
+  const { op, field, value } = req.body;
+
+  if (op && op === 'add') {
+    // check for duplicates
+    updates[field] = trip[field].concat(value);
+
+    console.log({ updates, field: trip[field], value });
+  }
+
+  if (op && op === 'replace') {
+    updates[field] = value;
+  }
+
+  const updatedTrip = await Trip.findByIdAndUpdate(id, updates, { new: true });
 
   res.status(200).send(updatedTrip);
 });

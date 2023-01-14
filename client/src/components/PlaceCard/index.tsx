@@ -10,6 +10,7 @@ const Card = styled.div<Partial<PlaceCardProps>>`
   background: ${(props) => props.theme.colors.grey['50']};
   display: flex;
   overflow: hidden;
+  max-height: 224px;
   ${(props) => generateSpacingProps(props)}
 `;
 
@@ -36,14 +37,25 @@ const CardSubtitle = styled.p`
   font-size: 0.875rem;
 `;
 
+const CardDescriptionWrapper = styled.div`
+  overflow: auto;
+  height: 50%;
+  margin-top: 16px;
+`;
+
 const CardDescription = styled.p`
-  padding-top: 12px;
   font-size: 1rem;
   line-height: 1.5;
 `;
 
 const CardImageWrapper = styled.div`
   flex: 1;
+`;
+
+const CardImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 `;
 
 const CardHeaderText = styled.div``;
@@ -85,11 +97,13 @@ const PlaceCard = (
             <FontAwesomeIcon icon={faTrashAlt} />
           </CardRemoveButton>
         </CardHeader>
-        <CardDescription>{description}</CardDescription>
+        <CardDescriptionWrapper>
+          <CardDescription>{description}</CardDescription>
+        </CardDescriptionWrapper>
       </CardDetails>
       {img && (
         <CardImageWrapper>
-          <img src={img} style={{ width: '100%', borderRadius: '16px' }} />
+          <CardImage src={img} />
         </CardImageWrapper>
       )}
     </Card>

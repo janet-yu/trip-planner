@@ -4,7 +4,7 @@ const tripSchema = new Schema(
   {
     title: String,
     placeReferenceId: String, // This'll help us populate trip location details
-    accommodations: [
+    lodging: [
       {
         referenceId: String,
         checkinDate: Date,

@@ -88,18 +88,18 @@ tripRouter.patch('/:id', async (req, res) => {
   res.status(200).send(updatedTrip);
 });
 
-tripRouter.get('/:id/accommodations', async (req, res) => {
+tripRouter.get('/:id/lodging', async (req, res) => {
   const { id } = req.params;
   const trip = await Trip.findById(id);
 
-  let accommodations = [];
+  let lodging = [];
 
-  for (const acc of trip.accommodations) {
-    const response = await GoogleAPIService.getPlaceDetails(acc.referenceId);
+  for (const place of trip.lodging) {
+    const response = await GoogleAPIService.getPlaceDetails(place.referenceId);
 
-    accommodations.push({
+    lodging.push({
       // @ts-ignore
-      id: acc._id,
+      id: place._id,
       details: {
         ...response.data.result,
       },
@@ -107,7 +107,7 @@ tripRouter.get('/:id/accommodations', async (req, res) => {
   }
 
   res.status(200).json({
-    accommodations,
+    lodging,
   });
 });
 

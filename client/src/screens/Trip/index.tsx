@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import moment from 'moment';
 import useUseLoadScript from '../../hooks/useUseLoadScript';
 import Navigation from '../../components/Navigation';
 import styled from 'styled-components';
@@ -31,16 +32,20 @@ const Header = styled.header<{ bgUrl?: string }>`
     right: 0;
     top: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.5);
     z-index: 0;
   }
 `;
 
-const TripHeading = styled.h1`
-  font-size: 4rem;
-  margin: 48px 0;
+const TripHeadingContainer = styled.div`
   position: relative;
   z-index: 1;
+  text-align: center;
+`;
+
+const TripHeading = styled.h1`
+  font-size: 4rem;
+  margin: 24px 0;
   text-transform: uppercase;
   letter-spacing: 4px;
   text-align: center;
@@ -63,6 +68,10 @@ const TripHeading = styled.h1`
   &::before {
     right: 110%;
   }
+`;
+
+const TripDates = styled.p`
+  font-weight: bold;
 `;
 
 const MainContentContainer = styled.main`
@@ -121,6 +130,8 @@ interface Trip {
   lodging: any[];
   title: string;
   placeReferenceId: string;
+  startDate: Date;
+  endDate: Date;
 }
 
 const mapContainerStyle = {
@@ -279,9 +290,16 @@ const Trip = () => {
     <div>
       <Header bgUrl="https://vastphotos.com/files/uploads/photos/10588/chicago-skyline-photo-l.jpg?v=20220712073521">
         <Navigation variant="secondary" />
-        <TripHeading>
-          {(trip as unknown as { title: string }).title}
-        </TripHeading>
+        <TripHeadingContainer>
+          <TripDates>
+            {`${moment(trip.startDate).calendar()} - ${moment(
+              trip.endDate
+            ).calendar()}`}
+          </TripDates>
+          <TripHeading>
+            {(trip as unknown as { title: string }).title}
+          </TripHeading>
+        </TripHeadingContainer>
       </Header>
       <MainContentContainer>
         <TripDetailsContainer>

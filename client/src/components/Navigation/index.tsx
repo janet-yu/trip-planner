@@ -5,7 +5,10 @@ import { theme } from '../../Theme';
 
 const Nav = styled.nav`
   text-align: center;
+  position: relative;
+  z-index: 1;
 `;
+
 const NavList = styled.ul`
   display: flex;
   justify-content: center;
@@ -24,9 +27,34 @@ const links = [
     path: '/plan-trip',
     title: 'Plan a Trip',
   },
+  {
+    path: '/trip',
+    title: 'Trip',
+  },
 ];
 
-const Navigation = () => {
+type NavigationProps = {
+  variant?: 'primary' | 'secondary';
+};
+
+const Navigation = (props: NavigationProps) => {
+  const variant = props.variant ? props.variant : 'primary';
+
+  const getVariantTextColor = (isActive: boolean) => {
+    switch (variant) {
+      case 'primary': {
+        if (isActive) {
+          return theme.colors.grey['800'];
+        }
+
+        return theme.colors.grey['400'];
+      }
+      case 'secondary': {
+        return '#fff';
+      }
+    }
+  };
+
   return (
     <Nav>
       <NavList>
@@ -36,9 +64,7 @@ const Navigation = () => {
               to={link.path}
               style={({ isActive }) => {
                 return {
-                  color: isActive
-                    ? theme.colors.grey['800']
-                    : theme.colors.grey['400'],
+                  color: getVariantTextColor(isActive),
                   fontWeight: isActive ? 'bold' : 'normal',
                   textDecoration: isActive ? 'underline' : 'none',
                 };

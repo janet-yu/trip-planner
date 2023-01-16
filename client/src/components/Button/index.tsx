@@ -4,10 +4,19 @@ import { generateSpacingProps, SpacingProps } from '../utils';
 
 // @todo: refactor how selected buttons are rendered?
 const variantStyles = (
-  variant: 'primary' | 'secondary' | 'selected',
+  variant: 'primary' | 'secondary',
+  selected: boolean,
   bold: boolean
 ) => {
-  if (variant === 'primary' || variant === 'selected') {
+  if (variant === 'primary') {
+    if (selected) {
+      return css`
+        background-color: transparent;
+        border: ${bold ? '4px' : '1px'} solid
+          ${(props) => props.theme.colors.grey['500']};
+        color: ${(props) => props.theme.colors.grey['500']};
+      `;
+    }
     return css`
       background-color: ${(props) => props.theme.colors.primary['500']};
       border: 1px solid transparent;
@@ -17,32 +26,35 @@ const variantStyles = (
         background-color: ${(props) => props.theme.colors.primary['400']};
       }
     `;
+  } else {
+    return css`
+      background: transparent;
+      border: 3px solid #fff;
+      color: #fff;
+      font-weight: bold;
+    `;
   }
-
-  return css`
-    background-color: transparent;
-    border: ${bold ? '4px' : '1px'} solid
-      ${(props) => props.theme.colors.grey['500']};
-    color: ${(props) => props.theme.colors.grey['500']};
-  `;
 };
 
 const StyledButton = styled.button<ButtonProps>`
   border-radius: 50px;
-  padding: 1em;
+  padding: 12px 16px;
   min-width: 150px;
   transition: all 0.2s ease-in;
+  font-size: 1rem;
   &:hover {
     cursor: pointer;
   }
 
-  ${(props) => variantStyles(props.variant, props.bold || false)}
+  ${(props) =>
+    variantStyles(props.variant, props.bold || false, props.selected || false)}
   ${(props) => generateSpacingProps(props)}
 `;
 
 type ButtonProps = {
   onClick?: MouseEventHandler;
-  variant: 'primary' | 'secondary' | 'selected';
+  variant: 'primary' | 'secondary';
+  selected?: boolean;
   bold?: boolean;
   children?: any;
 } & SpacingProps;

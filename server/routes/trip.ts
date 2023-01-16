@@ -8,6 +8,22 @@ enum PATCH_OPERATIONS {
   replace = 'replace',
 }
 
+enum RESPONSE_STATUSES {
+  success = 'success',
+  fail = 'fail',
+  error = 'error',
+}
+
+/**
+ * Data should be JSend compliant
+ * {
+ *  status: "success",
+ *  data: {
+ *    <resource>: ...
+ *  }
+ * }
+ */
+
 const tripRouter = Router();
 
 tripRouter.post('/', async (req, res) => {
@@ -30,110 +46,193 @@ tripRouter.post('/', async (req, res) => {
       activities,
     });
 
-    res.status(201).send(trip);
+    res.status(201).json({
+      status: RESPONSE_STATUSES.success,
+      data: {
+        trip,
+      },
+    });
   } catch (err) {
-    res.status(400).send('Failed to create trip');
+    res.status(500).json({
+      status: RESPONSE_STATUSES.error,
+      message: 'Failed to create trip',
+    });
   }
 });
 
 tripRouter.get('/:id', async (req, res) => {
   const { id } = req.params;
 
-  const trip = await Trip.findById(id);
+  try {
+    const trip = await Trip.findById(id);
 
-  const response = await GoogleAPIService.getPlaceDetails(
-    trip.placeReferenceId
-  );
+    if (!trip) {
+      res.status(400).json({
+        status: 'fail',
+        message: `Trip with id ${id} does not exist`,
+      });
+    }
 
-  res.status(200).send({
-    ...trip.toObject(),
-    ...response.data.result,
-  });
+    const response = await GoogleAPIService.getPlaceDetails(
+      trip.placeReferenceId
+    );
+
+    res.status(200).json({
+      status: RESPONSE_STATUSES.success,
+      data: {
+        trip: {
+          ...trip.toObject(),
+          ...response.data.result,
+        },
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+    });
+  }
 });
 
 tripRouter.patch('/:id', async (req, res) => {
   const { id } = req.params;
-  const trip = await Trip.findById(id);
-  const updates = {};
 
-  // https://medium.com/@isuru89/a-better-way-to-implement-http-patch-operation-in-rest-apis-721396ac82bf
-  const { op, field, value } = req.body;
+  try {
+    const trip = await Trip.findById(id);
 
-  if (op && op === PATCH_OPERATIONS.add) {
-    // check for duplicates
-    updates[field] = trip[field].concat(value);
-  }
+    if (!trip) {
+      res.status(400).json({
+        status: RESPONSE_STATUSES,
+        message: `Trip with id ${id} does not exist`,
+      });
+    }
+    const updates = {};
 
-  if (op && op === PATCH_OPERATIONS.replace) {
-    updates[field] = value;
-  }
+    // https://medium.com/@isuru89/a-better-way-to-implement-http-patch-operation-in-rest-apis-721396ac82bf
+    const { op, field, value } = req.body;
 
-  if (op === PATCH_OPERATIONS.remove) {
-    if (trip[field].length !== undefined) {
-      // If the value is an object with an ID, this suggests
-      // we want to remove an object from an array
-      if (value.id) {
-        updates[field] = trip[field].filter((el) => {
-          return el._id.toString() !== value.id;
-        });
-      } else {
-        // Else, we want to remove a primitive
-        updates[field] = trip[field].filter((el) => el === value);
+    if (op && op === PATCH_OPERATIONS.add) {
+      // check for duplicates
+      updates[field] = trip[field].concat(value);
+    }
+
+    if (op && op === PATCH_OPERATIONS.replace) {
+      updates[field] = value;
+    }
+
+    if (op === PATCH_OPERATIONS.remove) {
+      if (trip[field].length !== undefined) {
+        // If the value is an object with an ID, this suggests
+        // we want to remove an object from an array
+        if (value.id) {
+          updates[field] = trip[field].filter((el) => {
+            return el._id.toString() !== value.id;
+          });
+        } else {
+          // Else, we want to remove a primitive
+          updates[field] = trip[field].filter((el) => el === value);
+        }
       }
     }
+
+    const updatedTrip = await Trip.findByIdAndUpdate(id, updates, {
+      new: true,
+    });
+
+    res.status(200).json({
+      status: RESPONSE_STATUSES.success,
+      data: {
+        trip: updatedTrip,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: RESPONSE_STATUSES.error,
+    });
   }
-
-  const updatedTrip = await Trip.findByIdAndUpdate(id, updates, { new: true });
-
-  res.status(200).send(updatedTrip);
 });
 
 tripRouter.get('/:id/lodging', async (req, res) => {
   const { id } = req.params;
-  const trip = await Trip.findById(id);
 
-  let lodging = [];
+  try {
+    const trip = await Trip.findById(id);
 
-  for (const place of trip.lodging) {
-    const response = await GoogleAPIService.getPlaceDetails(place.referenceId);
+    if (!trip) {
+      res.status(400).json({
+        status: RESPONSE_STATUSES.fail,
+        message: `Trip with id ${id} does not exist`,
+      });
+    }
 
-    lodging.push({
-      // @ts-ignore
-      id: place._id,
-      details: {
-        ...response.data.result,
+    let lodging = [];
+
+    for (const place of trip.lodging) {
+      const response = await GoogleAPIService.getPlaceDetails(
+        place.referenceId
+      );
+
+      lodging.push({
+        // @ts-ignore
+        id: place._id,
+        details: {
+          ...response.data.result,
+        },
+      });
+    }
+
+    res.status(200).json({
+      status: RESPONSE_STATUSES.success,
+      data: {
+        lodging,
       },
     });
+  } catch (err) {
+    res.status(500).json({
+      status: RESPONSE_STATUSES.error,
+    });
   }
-
-  res.status(200).json({
-    lodging,
-  });
 });
 
 tripRouter.get('/:id/itinerary', async (req, res) => {
   const { id } = req.params;
-  const trip = await Trip.findById(id);
 
-  let itinerary = [];
+  try {
+    const trip = await Trip.findById(id);
 
-  for (const activity of trip.itinerary) {
-    const response = await GoogleAPIService.getPlaceDetails(
-      activity.referenceId
-    );
+    if (!trip) {
+      res.status(400).json({
+        status: RESPONSE_STATUSES.fail,
+        message: `Trip with id ${id} does not exist`,
+      });
+    }
 
-    itinerary.push({
-      // @ts-ignore
-      id: activity._id,
-      details: {
-        ...response.data.result,
+    let itinerary = [];
+
+    for (const activity of trip.itinerary) {
+      const response = await GoogleAPIService.getPlaceDetails(
+        activity.referenceId
+      );
+
+      itinerary.push({
+        // @ts-ignore
+        id: activity._id,
+        details: {
+          ...response.data.result,
+        },
+      });
+    }
+
+    res.status(200).json({
+      status: RESPONSE_STATUSES.success,
+      data: {
+        itinerary,
       },
     });
+  } catch (err) {
+    res.status(500).json({
+      status: RESPONSE_STATUSES.error,
+    });
   }
-
-  res.status(200).json({
-    itinerary,
-  });
 });
 
 export default tripRouter;

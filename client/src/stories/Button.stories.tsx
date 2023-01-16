@@ -19,7 +19,7 @@ export const SecondaryButton = () => (
 );
 
 export const SelectedButton = () => (
-  <Button variant="selected" onClick={() => {}}>
+  <Button variant="primary" selected onClick={() => {}}>
     Selected Button
   </Button>
 );

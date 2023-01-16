@@ -70,7 +70,7 @@ const AddLodgingModal = ({
       request
     );
 
-    setTrip(updated.data);
+    setTrip(updated.data.data.trip);
   };
 
   return (

@@ -16,6 +16,12 @@ const FormTitle = styled.h3`
   margin-bottom: 16px;
 `;
 
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+`;
+
 const AddActivityModal = ({
   setModalClose,
   setTrip,
@@ -61,7 +67,7 @@ const AddActivityModal = ({
       request
     );
 
-    setTrip(updated.data);
+    setTrip(updated.data.data.trip);
   };
 
   return (
@@ -97,9 +103,11 @@ const AddActivityModal = ({
                   />
                 )}
               </Field>
-              <Button variant="primary" type="submit">
-                Add
-              </Button>
+              <ButtonWrapper>
+                <Button variant="primary" type="submit">
+                  Add
+                </Button>
+              </ButtonWrapper>
             </form>
           )}
         </Formik>

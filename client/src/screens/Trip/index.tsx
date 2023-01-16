@@ -10,6 +10,8 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import AddLodgingModal from './AddLodgingModal';
 import axios from 'axios';
 import AddActivityModal from './AddActivityModal';
+import Button from '../../components/Button';
+import SaveTripCodeModal from './SaveTripCodeModal';
 
 const Header = styled.header<{ bgUrl?: string }>`
   background: url(${(props) => props.bgUrl});
@@ -49,6 +51,7 @@ const TripHeading = styled.h1`
   text-transform: uppercase;
   letter-spacing: 4px;
   text-align: center;
+  position: relative;
 
   &::after,
   &::before {
@@ -123,6 +126,7 @@ const AddItemButton = styled.button`
 enum ModalForm {
   ADD_LODGING,
   ADD_ACTIVITY,
+  SAVE_TRIP,
 }
 
 interface Trip {
@@ -171,7 +175,7 @@ const Trip = () => {
       request
     );
 
-    setTrip(updated.data);
+    setTrip(updated.data.data.trip);
   };
 
   const handleRemoveItineraryActivity = async (activityId: string) => {
@@ -188,17 +192,17 @@ const Trip = () => {
       request
     );
 
-    setTrip(updated.data);
+    setTrip(updated.data.data.trip);
   };
 
   useEffect(() => {
     const fetchTrip = async () => {
       if (id) {
-        const res = await axios.get(
+        const { data } = await axios.get(
           `${process.env.REACT_APP_API_URL}/trips/${id}` as string
         );
 
-        setTrip(res.data);
+        setTrip(data.data.trip);
       }
     };
 
@@ -220,7 +224,7 @@ const Trip = () => {
         `${process.env.REACT_APP_API_URL}/trips/${id}/lodging`
       );
 
-      setLodging(response.data.lodging);
+      setLodging(response.data.data.lodging);
     };
 
     const getItinerary = async () => {
@@ -228,7 +232,7 @@ const Trip = () => {
         `${process.env.REACT_APP_API_URL}/trips/${id}/itinerary`
       );
 
-      setItinerary(response.data.itinerary);
+      setItinerary(response.data.data.itinerary);
     };
 
     getLodging();
@@ -271,7 +275,7 @@ const Trip = () => {
         return (
           <AddLodgingModal
             setModalClose={handleModalClose}
-            tripId={(trip as unknown as { _id: string })._id}
+            tripId={trip._id}
             setTrip={setTrip}
           />
         );
@@ -279,8 +283,15 @@ const Trip = () => {
         return (
           <AddActivityModal
             setModalClose={handleModalClose}
-            tripId={(trip as unknown as { _id: string })._id}
+            tripId={trip._id}
             setTrip={setTrip}
+          />
+        );
+      case ModalForm.SAVE_TRIP:
+        return (
+          <SaveTripCodeModal
+            setModalClose={handleModalClose}
+            tripId={trip._id}
           />
         );
     }
@@ -288,17 +299,34 @@ const Trip = () => {
 
   return (
     <div>
-      <Header bgUrl="https://vastphotos.com/files/uploads/photos/10588/chicago-skyline-photo-l.jpg?v=20220712073521">
+      {/* @ts-ignore */}
+      <Header
+        bgUrl={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=${
+          trip.photos && (trip.photos[0] as any).photo_reference
+        }&key=AIzaSyCpTac3TkWVqlwesacX7YFbZfqOuXLVU8g`}
+      >
         <Navigation variant="secondary" />
         <TripHeadingContainer>
           <TripDates>
-            {`${moment(trip.startDate).calendar()} - ${moment(
+            {`${moment(trip.startDate).format('L')} - ${moment(
               trip.endDate
-            ).calendar()}`}
+            ).format('L')}`}
           </TripDates>
           <TripHeading>
             {(trip as unknown as { title: string }).title}
           </TripHeading>
+          <Button
+            variant="secondary"
+            bold
+            onClick={() => {
+              setModalOpen({
+                open: true,
+                modalForm: ModalForm.SAVE_TRIP,
+              });
+            }}
+          >
+            Save Trip
+          </Button>
         </TripHeadingContainer>
       </Header>
       <MainContentContainer>

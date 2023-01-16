@@ -7,6 +7,7 @@ import { Formik } from 'formik';
 import Button from '../../../components/Button';
 import axios from 'axios';
 import * as Yup from 'yup';
+import { useNavigate } from 'react-router-dom';
 
 const FormContainer = styled.div`
   background-color: #f7f7fb;
@@ -72,8 +73,9 @@ const PlanTripForm = () => {
   };
   const [currentStep, setCurrentStep] = useState(0);
   const isLastStep = currentStep === formSteps.length - 1;
+  const navigate = useNavigate();
 
-  const handleSubmitData = (values: any) => {
+  const handleSubmitData = async (values: any) => {
     const data = {
       title: values.place.value,
       placeReferenceId: values.place.id,
@@ -81,7 +83,12 @@ const PlanTripForm = () => {
       endDate: values.endDate,
     };
 
-    axios.post(`${process.env.REACT_APP_API_URL}/trips` as string, data);
+    const response = await axios.post<{ data: { trip: { _id: string } } }>(
+      `${process.env.REACT_APP_API_URL}/trips` as string,
+      data
+    );
+
+    navigate(`/trip/${response.data.data.trip._id}`);
   };
 
   const handleNextStep = () => {

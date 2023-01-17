@@ -1,28 +1,7 @@
 import { Router } from 'express';
 import Trip from '../models/trip';
 import GoogleAPIService from '../lib/googleAPI';
-
-enum PATCH_OPERATIONS {
-  add = 'add',
-  remove = 'remove',
-  replace = 'replace',
-}
-
-enum RESPONSE_STATUSES {
-  success = 'success',
-  fail = 'fail',
-  error = 'error',
-}
-
-/**
- * Data should be JSend compliant
- * {
- *  status: "success",
- *  data: {
- *    <resource>: ...
- *  }
- * }
- */
+import { PATCH_OPERATIONS, RESPONSE_STATUSES } from './utils/types';
 
 const tripRouter = Router();
 

@@ -3,12 +3,13 @@ import mongoose, { Schema } from 'mongoose';
 const userSchema = new Schema({
   username: String,
   password: String,
-  name: String,
-  dob: Date
-})
+  email: String,
+  firstName: String,
+  lastName: String,
+});
 
 // Models = what we use to actually interact with the database
 // Schemas = the blueprint for documents
-const userModel = mongoose.model('User', userSchema)
+const userModel = mongoose.model('User', userSchema);
 
-export default userModel
+export default userModel;

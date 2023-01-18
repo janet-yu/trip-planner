@@ -54,13 +54,13 @@ const NavigationButton = styled.button`
 `;
 
 const CalendarViewContainer = styled.div<{ view: CalendarView }>`
-  height: 170px;
   display: flex;
   flex-direction: column;
 `;
 
 const CalendarViewGrid = styled.div<{ view: CalendarView }>`
   display: grid;
+  gap: 4px;
   grid-template-columns: repeat(
     ${(props) => (props.view === CalendarView.Day ? 7 : 4)},
     1fr
@@ -84,6 +84,7 @@ const DateIndicator = styled.button<{
     props.selected ? props.theme.colors.primary['500'] : 'transparent'};
   color: ${(props) => (props.selected ? 'white' : 'black')};
   font-size: 12px;
+  aspect-ratio: 1;
   &:hover {
     background: #eee;
     cursor: pointer;

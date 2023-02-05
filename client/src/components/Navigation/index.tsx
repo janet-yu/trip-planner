@@ -7,6 +7,7 @@ const Nav = styled.nav`
   text-align: center;
   position: relative;
   z-index: 1;
+  margin-bottom: 48px;
 `;
 
 const NavList = styled.ul`
@@ -26,10 +27,6 @@ const links = [
   {
     path: '/plan-trip',
     title: 'Plan a Trip',
-  },
-  {
-    path: '/trip',
-    title: 'Trip',
   },
 ];
 

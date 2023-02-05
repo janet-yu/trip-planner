@@ -4,6 +4,7 @@ import cors from 'cors';
 import * as dotenv from 'dotenv';
 import tripRouter from './routes/trip';
 import userRouter from './routes/user';
+import tripCodeRouter from './routes/tripCode';
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.get('/', (req, res) => {});
 
 app.use('/trips', tripRouter);
 app.use('/users', userRouter);
+app.use('/trip-codes', tripCodeRouter);
 
 app.listen(PORT, () => {
   console.log(`App listening on PORT ${PORT}`);

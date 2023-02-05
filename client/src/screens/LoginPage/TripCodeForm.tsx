@@ -1,10 +1,26 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { Formik, Form } from 'formik';
-import React from 'react';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
 import { LoginPrompt } from './styles';
 
 const TripCodeForm = (props: any) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (values: any) => {
+    const { code } = values;
+
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/trip-codes/${code}/trip`
+    );
+
+    if (response.data) {
+      navigate(`/trip/${response.data._id}`);
+    }
+  };
+
   return (
     <div>
       <LoginPrompt>Enter trip code:</LoginPrompt>
@@ -12,7 +28,9 @@ const TripCodeForm = (props: any) => {
         initialValues={{
           code: '',
         }}
-        onSubmit={() => {}}
+        onSubmit={(values) => {
+          handleSubmit(values);
+        }}
       >
         {(props) => (
           <Form
@@ -27,8 +45,9 @@ const TripCodeForm = (props: any) => {
               name="code"
               placeholder="Code"
               style={{ margin: '10px 0' }}
+              onChange={props.handleChange}
             />
-            <Button variant="primary" onClick={() => {}} type="submit" my={16}>
+            <Button variant="primary" type="submit" my={16}>
               Enter code
             </Button>
           </Form>

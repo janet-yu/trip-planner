@@ -6,37 +6,21 @@ import TripCode from '../models/tripCode';
 const tripCodeRouter = Router();
 
 tripCodeRouter.post('/', async (req, res) => {
-  const {
-    title,
-    placeReferenceId,
-    startDate,
-    endDate,
-    activities,
-    people, // list of reference IDs
-    userId,
-  } = req.body;
-
-  const trip = await Trip.create({
-    title,
-    placeReferenceId,
-    startDate,
-    endDate,
-    activities,
-  });
+  const { tripId } = req.body;
 
   let generatedCode = false;
 
   while (!generatedCode) {
     const tripCode = randomstring.generate(7);
     const existingTripCode = await TripCode.findOne({
-      code: tripCode,
+      $or: [{ code: tripCode }, { tripId: tripId }],
     });
 
     if (!existingTripCode) {
       generatedCode = true;
 
       const code = await TripCode.create({
-        tripId: trip._id,
+        tripId: tripId,
         active: true,
         expiresAt: new Date(),
         code: tripCode,
@@ -49,7 +33,7 @@ tripCodeRouter.post('/', async (req, res) => {
   }
 });
 
-tripCodeRouter.get('/:code', async (req, res) => {
+tripCodeRouter.get('/:code/trip', async (req, res) => {
   const code = req.params.code;
 
   const tripCode = await TripCode.findOne({
@@ -68,3 +52,5 @@ tripCodeRouter.get('/:code', async (req, res) => {
 
   res.status(200).send(trip);
 });
+
+export default tripCodeRouter;

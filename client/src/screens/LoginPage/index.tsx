@@ -10,6 +10,7 @@ import {
 } from './styles';
 import { TripCodeForm } from './TripCodeForm';
 import { LoginForm } from './LoginForm';
+import SignupForm from './forms/SignUp';
 
 /**
  * What we need:
@@ -31,6 +32,10 @@ const LoginPage = () => {
 
     if (loginView === 'login') {
       return <LoginForm setLoginView={setLoginView} />;
+    }
+
+    if (loginView === 'signup') {
+      return <SignupForm setLoginView={setLoginView} />;
     }
   };
 

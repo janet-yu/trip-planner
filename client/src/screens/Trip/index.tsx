@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
+import styled from 'styled-components';
+import { device } from '../../utils/mediaQueries';
 import useUseLoadScript from '../../hooks/useUseLoadScript';
 import Navigation from '../../components/Navigation';
 import styled from 'styled-components';
@@ -78,7 +80,9 @@ const TripDates = styled.p`
 `;
 
 const MainContentContainer = styled.main`
-  display: flex;
+  @media ${device.laptop} {
+    display: flex;
+  }
 `;
 
 const TripDetailsContainer = styled.div`
@@ -90,7 +94,8 @@ const TripDetailsContainer = styled.div`
 `;
 
 const SectionsContainer = styled.div`
-  width: 680px;
+  width: 85%;
+  max-width: 680px;
   margin: 0 auto;
 `;
 

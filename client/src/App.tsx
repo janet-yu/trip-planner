@@ -15,16 +15,19 @@ import TripPage from './screens/Trip';
 import { Theme } from './Theme';
 import ProtectedLayout from './components/ProtectedLayout';
 import Home from './screens/Home';
+import UpcomingTrips from './screens/UpcomingTrips';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<AuthProvider />}>
       <Route path="login" element={<LoginPage />} />
+
       {/* Protected routes */}
       <Route element={<ProtectedLayout />}>
         <Route path="/" element={<Home />} />
-        <Route path="plan-trip" element={<PlanTripPage />} />
         <Route path="trip/:id" element={<TripPage />} />
+        <Route path="upcoming-trips" element={<UpcomingTrips />} />
+        <Route path="plan-trip" element={<PlanTripPage />} />
       </Route>
     </Route>
   )

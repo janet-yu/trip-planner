@@ -9,20 +9,28 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { AuthProvider } from './context/AuthProvider';
 import PlanTripPage from './screens/PlanTrip';
 import TripPage from './screens/Trip';
 import { Theme } from './Theme';
+import ProtectedLayout from './components/ProtectedLayout';
+import Home from './screens/Home';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route>
-      <Route index element={<LoginPage />} />
-      <Route path="plan-trip" element={<PlanTripPage />} />
-      <Route path="trip/:id" element={<TripPage />} />
+    <Route element={<AuthProvider />}>
+      <Route path="login" element={<LoginPage />} />
+      {/* Protected routes */}
+      <Route element={<ProtectedLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="plan-trip" element={<PlanTripPage />} />
+        <Route path="trip/:id" element={<TripPage />} />
+      </Route>
     </Route>
   )
 );
 const queryClient = new QueryClient();
+
 function App() {
   return (
     <Theme>

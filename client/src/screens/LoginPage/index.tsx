@@ -11,19 +11,17 @@ import {
 import { TripCodeForm } from './TripCodeForm';
 import { LoginForm } from './LoginForm';
 import SignupForm from './forms/SignUp';
+import { useNavigate } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
 
-/**
- * What we need:
- * 1. Login button
- * 2. Sign up button
- * 3. Text inputs for username / password
- * 4. Card for welcome
- * 5. Card for login components
- * 6. Endpoint for login
- * 7. Login State machine for which views to render
- */
 const LoginPage = () => {
   const [loginView, setLoginView] = useState('login');
+  const { auth } = useAuth();
+  const navigate = useNavigate();
+
+  if (auth.user) {
+    navigate('/');
+  }
 
   const renderLoginView = () => {
     if (loginView === 'code') {

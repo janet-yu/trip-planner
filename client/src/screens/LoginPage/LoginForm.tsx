@@ -1,13 +1,17 @@
-import { Formik, Form } from 'formik';
 import React from 'react';
+import { Formik, Form } from 'formik';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
-import { NavLink, useNavigate } from 'react-router-dom';
 import { LoginPrompt, CTAText } from './styles';
 import axios from 'axios';
+import useAuth from '../../hooks/useAuth';
 
 const LoginForm = (props: any) => {
   const navigate = useNavigate();
+  const { setAuth } = useAuth();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/';
 
   const handleSubmit = async (values: any) => {
     const request = {
@@ -21,7 +25,13 @@ const LoginForm = (props: any) => {
     );
 
     if (response.data) {
-      navigate(`/plan-trip`);
+      setAuth({
+        token: response.data.data.accessToken,
+        user: response.data.data.user,
+      });
+
+      // Navigate to dashboard
+      navigate(from, { replace: true });
     }
   };
   return (

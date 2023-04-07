@@ -1,7 +1,7 @@
-import { axiosPrivate } from "../api/axios";
-import { useEffect } from "react";
-import useRefreshToken from "./useRefreshToken";
-import useAuth from "./useAuth";
+import { axiosPrivate } from '../api/axios';
+import { useEffect } from 'react';
+import useRefreshToken from './useRefreshToken';
+import useAuth from './useAuth';
 
 /**
  * Attach interceptors to axios private instance
@@ -17,9 +17,9 @@ const useAxiosPrivate = () => {
     // move on to authentication.
     const requestInterceptor = axiosPrivate.interceptors.request.use(
       (config) => {
-        console.log("in request interceptor");
-        if (config.headers && !config.headers["Authorization"]) {
-          config.headers["Authorization"] = `Bearer ${auth?.accessToken}`;
+        console.log('in request interceptor');
+        if (config.headers && !config.headers['Authorization']) {
+          config.headers['Authorization'] = `Bearer ${auth?.accessToken}`;
         }
 
         return config;
@@ -44,7 +44,7 @@ const useAxiosPrivate = () => {
           // redirect to the login page.
           const newAccessToken = await refresh();
 
-          prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+          prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
 
           return axiosPrivate(prevRequest);
         }

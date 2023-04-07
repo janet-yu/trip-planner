@@ -1,6 +1,9 @@
 import { Router } from 'express';
-import User from '../models/user';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import GoogleAPIService from '../lib/googleAPI';
+import User from '../models/user';
+import Trip from '../models/trip';
 import { RESPONSE_STATUSES } from './utils/types';
 
 const userRouter = Router();
@@ -27,12 +30,10 @@ userRouter.post('/signup', async (req, res) => {
       },
     });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        status: RESPONSE_STATUSES.error,
-        message: 'Failed to create user.',
-      });
+    res.status(500).json({
+      status: RESPONSE_STATUSES.error,
+      message: 'Failed to create user.',
+    });
   }
 });
 
@@ -48,10 +49,41 @@ userRouter.post('/login', async (req, res) => {
       const validPassword = await bcrypt.compare(password, user.password);
 
       if (validPassword) {
+        const accessToken = jwt.sign(
+          {
+            username: user.username,
+          },
+          process.env.ACCESS_TOKEN_SECRET,
+          {
+            expiresIn: '30s',
+          }
+        );
+        const refreshToken = jwt.sign(
+          {
+            username: user.username,
+          },
+          process.env.REFRESH_TOKEN_SECRET,
+          {
+            expiresIn: '1d',
+          }
+        );
+
+        // save the refresh token in the db
+        user.refreshToken = refreshToken;
+        await user.save();
+
+        // Using an HttpOnly cookie, meaning only the server can access this set cookie.
+        // Client side code cannot access this cookie, it won't be stored in the browser's cookie
+        // storage.
+        res.cookie('jwt', refreshToken, {
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000,
+        });
         res.status(200).json({
           status: RESPONSE_STATUSES.success,
           data: {
             user,
+            accessToken,
           },
         });
       } else {
@@ -72,6 +104,37 @@ userRouter.post('/login', async (req, res) => {
       message: 'Something went wrong.',
     });
   }
+});
+
+userRouter.get('/:id/trips', async (req, res) => {
+  const userId = req.params.id;
+  const trips = await Trip.find({
+    userId,
+  });
+
+  const tripResults = [];
+
+  for (const place of trips) {
+    const response = await GoogleAPIService.getPlaceDetails(
+      place.placeReferenceId
+    );
+
+    tripResults.push({
+      // @ts-ignore
+      id: place._id,
+      details: {
+        ...place.toObject(),
+        ...response.data.result,
+      },
+    });
+  }
+
+  return res.status(200).json({
+    status: RESPONSE_STATUSES.success,
+    data: {
+      trips: tripResults,
+    },
+  });
 });
 
 export default userRouter;

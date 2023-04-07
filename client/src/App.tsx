@@ -8,7 +8,6 @@ import {
   createRoutesFromElements,
   RouterProvider,
 } from 'react-router-dom';
-import { ReactQueryDevtools } from 'react-query/devtools';
 import { AuthProvider } from './context/AuthProvider';
 import PlanTripPage from './screens/PlanTrip';
 import TripPage from './screens/Trip';
@@ -20,14 +19,14 @@ import UpcomingTrips from './screens/UpcomingTrips';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<AuthProvider />}>
-      <Route path="login" element={<LoginPage />} />
+      <Route path='login' element={<LoginPage />} />
 
       {/* Protected routes */}
       <Route element={<ProtectedLayout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="trip/:id" element={<TripPage />} />
-        <Route path="upcoming-trips" element={<UpcomingTrips />} />
-        <Route path="plan-trip" element={<PlanTripPage />} />
+        <Route path='/' element={<Home />} />
+        <Route path='trip/:id' element={<TripPage />} />
+        <Route path='upcoming-trips' element={<UpcomingTrips />} />
+        <Route path='plan-trip' element={<PlanTripPage />} />
       </Route>
     </Route>
   )
@@ -39,7 +38,6 @@ function App() {
     <Theme>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
-        <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
       </QueryClientProvider>
     </Theme>
   );

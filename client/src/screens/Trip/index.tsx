@@ -4,16 +4,16 @@ import styled from 'styled-components';
 import { device } from '../../utils/mediaQueries';
 import useUseLoadScript from '../../hooks/useUseLoadScript';
 import Navigation from '../../components/Navigation';
-import styled from 'styled-components';
 import PlaceCard from '../../components/PlaceCard';
 import { GoogleMap } from '@react-google-maps/api';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import AddLodgingModal from './AddLodgingModal';
 import axios from 'axios';
 import AddActivityModal from './AddActivityModal';
 import Button from '../../components/Button';
 import SaveTripCodeModal from './SaveTripCodeModal';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 const Header = styled.header<{ bgUrl?: string }>`
   background: url(${(props) => props.bgUrl});
@@ -163,6 +163,9 @@ const Trip = () => {
     open: false,
     modalForm: 0,
   });
+  const navigate = useNavigate();
+  const location = useLocation();
+  const axiosPrivate = useAxiosPrivate();
 
   console.log({ trip });
 
@@ -203,11 +206,14 @@ const Trip = () => {
   useEffect(() => {
     const fetchTrip = async () => {
       if (id) {
-        const { data } = await axios.get(
-          `${process.env.REACT_APP_API_URL}/trips/${id}` as string
-        );
+        try {
+          const { data } = await axiosPrivate.get(`/trips/${id}` as string);
 
-        setTrip(data.data.trip);
+          setTrip(data.data.trip);
+        } catch (err) {
+          // Basically, redirect the user back to the page they were on before getting booted to login
+          navigate('/login', { state: { from: location }, replace: true });
+        }
       }
     };
 
@@ -310,7 +316,7 @@ const Trip = () => {
           trip.photos && (trip.photos[0] as any).photo_reference
         }&key=AIzaSyCpTac3TkWVqlwesacX7YFbZfqOuXLVU8g`}
       >
-        <Navigation variant="secondary" />
+        <Navigation variant='secondary' />
         <TripHeadingContainer>
           <TripDates>
             {`${moment(trip.startDate).format('L')} - ${moment(
@@ -321,7 +327,7 @@ const Trip = () => {
             {(trip as unknown as { title: string }).title}
           </TripHeading>
           <Button
-            variant="secondary"
+            variant='secondary'
             bold
             onClick={() => {
               setModalOpen({
@@ -382,7 +388,7 @@ const Trip = () => {
                   }
                 }}
               >
-                <Droppable droppableId="droppable-1">
+                <Droppable droppableId='droppable-1'>
                   {(provided) => (
                     <div ref={provided.innerRef} {...provided.droppableProps}>
                       {!!itinerary.length &&

@@ -26,8 +26,8 @@ const LoginForm = (props: any) => {
 
     if (response.data) {
       setAuth({
-        token: response.data.data.accessToken,
-        user: response.data.data.user,
+        accessToken: response.data.data.accessToken,
+        user: { ...response.data.data.user, refreshToken: undefined },
       });
 
       // Navigate to dashboard
@@ -55,22 +55,22 @@ const LoginForm = (props: any) => {
             }}
           >
             <TextInput
-              type="text"
-              name="username"
-              placeholder="Username"
+              type='text'
+              name='username'
+              placeholder='Username'
               style={{ margin: '10px 0' }}
               onChange={props.handleChange}
             />
             <TextInput
-              type="password"
-              name="password"
-              placeholder="Password"
+              type='password'
+              name='password'
+              placeholder='Password'
               style={{
                 margin: '10px 0',
               }}
               onChange={props.handleChange}
             />
-            <Button variant="primary" type="submit" my={16}>
+            <Button variant='primary' type='submit' my={16}>
               Sign in
             </Button>
           </Form>
@@ -78,17 +78,17 @@ const LoginForm = (props: any) => {
       </Formik>
       <CTAText>
         Don't have an account?{' '}
-        <NavLink to="/plan-trip">Create a trip here!</NavLink>
+        <NavLink to='/plan-trip'>Create a trip here!</NavLink>
       </CTAText>
       <CTAText>
         Have a trip code?{' '}
-        <a href="#" onClick={() => props.setLoginView('code')}>
+        <a href='#' onClick={() => props.setLoginView('code')}>
           Enter it here!
         </a>
       </CTAText>
       <CTAText>
         Don't have an account?
-        <a href="#" onClick={() => props.setLoginView('signup')}>
+        <a href='#' onClick={() => props.setLoginView('signup')}>
           Sign up here!
         </a>
       </CTAText>

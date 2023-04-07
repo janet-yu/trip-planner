@@ -9,16 +9,16 @@ import { Outlet } from 'react-router-dom';
 export type AuthContextType = {
   auth: {
     user: any;
-    token: string;
+    accessToken: string;
   };
-  setAuth: Dispatch<SetStateAction<{ token: string; user: null }>>;
+  setAuth: Dispatch<SetStateAction<{ accessToken: string; user: null }>>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = () => {
   const [auth, setAuth] = useState({
-    token: '',
+    accessToken: '',
     user: null,
   });
 

@@ -106,4 +106,35 @@ userRouter.post('/login', async (req, res) => {
   }
 });
 
+userRouter.get('/:id/trips', async (req, res) => {
+  const userId = req.params.id;
+  const trips = await Trip.find({
+    userId,
+  });
+
+  const tripResults = [];
+
+  for (const place of trips) {
+    const response = await GoogleAPIService.getPlaceDetails(
+      place.placeReferenceId
+    );
+
+    tripResults.push({
+      // @ts-ignore
+      id: place._id,
+      details: {
+        ...place.toObject(),
+        ...response.data.result,
+      },
+    });
+  }
+
+  return res.status(200).json({
+    status: RESPONSE_STATUSES.success,
+    data: {
+      trips: tripResults,
+    },
+  });
+});
+
 export default userRouter;

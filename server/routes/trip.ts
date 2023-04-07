@@ -2,10 +2,11 @@ import { Router } from 'express';
 import Trip from '../models/trip';
 import GoogleAPIService from '../lib/googleAPI';
 import { PATCH_OPERATIONS, RESPONSE_STATUSES } from './utils/types';
+import verifyJwt from '../middleware/verifyJwt';
 
 const tripRouter = Router();
 
-tripRouter.post('/', async (req, res) => {
+tripRouter.post('/', verifyJwt, async (req, res) => {
   try {
     const {
       title,
@@ -23,6 +24,7 @@ tripRouter.post('/', async (req, res) => {
       startDate,
       endDate,
       activities,
+      userId,
     });
 
     res.status(201).json({
@@ -39,7 +41,7 @@ tripRouter.post('/', async (req, res) => {
   }
 });
 
-tripRouter.get('/:id', async (req, res) => {
+tripRouter.get('/:id', verifyJwt, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -103,9 +105,9 @@ tripRouter.patch('/:id', async (req, res) => {
         // If the value is an object with an ID, this suggests
         // we want to remove an object from an array
         if (value.id) {
-          updates[field] = trip[field].filter((el) => {
-            return el._id.toString() !== value.id;
-          });
+          updates[field] = trip[field].filter(
+            (el) => el._id.toString() !== value.id
+          );
         } else {
           // Else, we want to remove a primitive
           updates[field] = trip[field].filter((el) => el === value);
@@ -143,7 +145,7 @@ tripRouter.get('/:id/lodging', async (req, res) => {
       });
     }
 
-    let lodging = [];
+    const lodging = [];
 
     for (const place of trip.lodging) {
       const response = await GoogleAPIService.getPlaceDetails(
@@ -185,7 +187,7 @@ tripRouter.get('/:id/itinerary', async (req, res) => {
       });
     }
 
-    let itinerary = [];
+    const itinerary = [];
 
     for (const activity of trip.itinerary) {
       const response = await GoogleAPIService.getPlaceDetails(

@@ -1,13 +1,11 @@
-import axios from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
+import axios from '../../../api/axios';
 
 const useFetchTrips = (userId: string): UseQueryResult<Array<any>> => {
   return useQuery(
     'trips',
     async () => {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/users/${userId}/trips`
-      );
+      const response = await axios.get(`/users/${userId}/trips`);
 
       console.log({ response });
 

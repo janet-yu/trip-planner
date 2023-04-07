@@ -5,9 +5,10 @@ import WhereForm from './WhereForm';
 import WhenForm from './WhenForm';
 import { Formik } from 'formik';
 import Button from '../../../components/Button';
-import axios from 'axios';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
+import useAuth from '../../../hooks/useAuth';
 
 const FormContainer = styled.div`
   background-color: #f7f7fb;
@@ -72,8 +73,12 @@ const PlanTripForm = () => {
     endDate: null,
   };
   const [currentStep, setCurrentStep] = useState(0);
+  const {
+    auth: { user },
+  } = useAuth();
   const isLastStep = currentStep === formSteps.length - 1;
   const navigate = useNavigate();
+  const axiosPrivate = useAxiosPrivate();
 
   const handleSubmitData = async (values: any) => {
     const data = {
@@ -81,12 +86,12 @@ const PlanTripForm = () => {
       placeReferenceId: values.place.id,
       startDate: values.startDate,
       endDate: values.endDate,
+      userId: user._id,
     };
 
-    const response = await axios.post<{ data: { trip: { _id: string } } }>(
-      `${process.env.REACT_APP_API_URL}/trips` as string,
-      data
-    );
+    const response = await axiosPrivate.post<{
+      data: { trip: { _id: string } };
+    }>(`/trips` as string, data);
 
     navigate(`/trip/${response.data.data.trip._id}`);
   };
@@ -148,14 +153,14 @@ const PlanTripForm = () => {
             <ButtonContainer>
               {currentStep > 0 && (
                 <Button
-                  variant="primary"
-                  type="button"
+                  variant='primary'
+                  type='button'
                   onClick={handlePreviousStep}
                 >
                   Back
                 </Button>
               )}
-              <Button variant="primary" type="submit" mLeft={8}>
+              <Button variant='primary' type='submit' mLeft={8}>
                 Continue
               </Button>
             </ButtonContainer>

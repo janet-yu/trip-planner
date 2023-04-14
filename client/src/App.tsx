@@ -15,6 +15,7 @@ import { Theme } from './Theme';
 import ProtectedLayout from './components/ProtectedLayout';
 import Home from './screens/Home';
 import UpcomingTrips from './screens/UpcomingTrips';
+import PersistedLogin from './components/PersistedLogin';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,11 +23,13 @@ const router = createBrowserRouter(
       <Route path='login' element={<LoginPage />} />
 
       {/* Protected routes */}
-      <Route element={<ProtectedLayout />}>
-        <Route path='/' element={<Home />} />
-        <Route path='trip/:id' element={<TripPage />} />
-        <Route path='upcoming-trips' element={<UpcomingTrips />} />
-        <Route path='plan-trip' element={<PlanTripPage />} />
+      <Route element={<PersistedLogin />}>
+        <Route element={<ProtectedLayout />}>
+          <Route path='/' element={<Home />} />
+          <Route path='trip/:id' element={<TripPage />} />
+          <Route path='upcoming-trips' element={<UpcomingTrips />} />
+          <Route path='plan-trip' element={<PlanTripPage />} />
+        </Route>
       </Route>
     </Route>
   )
@@ -38,6 +41,7 @@ function App() {
     <Theme>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
+        {/* <ReactQueryDevtools initialIsOpen={false} position='bottom-right' /> */}
       </QueryClientProvider>
     </Theme>
   );

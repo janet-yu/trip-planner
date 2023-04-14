@@ -7,15 +7,18 @@ const tokenRouter = Router();
 tokenRouter.get('/refresh', async (req, res) => {
   const { cookies } = req;
 
-  if (!cookies.jwt) return res.status(401);
+  if (!cookies.jwt) return res.sendStatus(401);
 
   const refreshToken = cookies.jwt;
   const foundUser = await User.findOne({ refreshToken });
 
-  if (!foundUser) return res.status(403);
+  if (!foundUser) {
+    return res.sendStatus(403);
+  }
 
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
-    if (err || foundUser.username !== decoded.username) return res.status(403);
+    if (err || foundUser.username !== decoded.username)
+      return res.sendStatus(403);
 
     const accessToken = jwt.sign(
       {
@@ -27,6 +30,7 @@ tokenRouter.get('/refresh', async (req, res) => {
 
     res.json({
       accessToken,
+      user: foundUser,
     });
   });
 });

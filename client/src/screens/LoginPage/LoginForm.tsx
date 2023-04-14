@@ -4,8 +4,8 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
 import { LoginPrompt, CTAText } from './styles';
-import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
+import axios from '../../api/axios';
 
 const LoginForm = (props: any) => {
   const navigate = useNavigate();
@@ -19,15 +19,12 @@ const LoginForm = (props: any) => {
       password: values.password,
     };
 
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/users/login`,
-      request
-    );
+    const response = await axios.post(`/users/login`, request);
 
     if (response.data) {
       setAuth({
         accessToken: response.data.data.accessToken,
-        user: { ...response.data.data.user, refreshToken: undefined },
+        user: response.data.data.user,
       });
 
       // Navigate to dashboard

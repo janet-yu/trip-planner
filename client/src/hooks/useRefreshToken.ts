@@ -1,16 +1,22 @@
 import useAuth from './useAuth';
 import axios from '../api/axios';
 
+/**
+ * This hook refreshes the user's access token. If
+ * the refresh token expires, we'll boot the user
+ * to the login page.
+ */
 const useRefreshToken = () => {
   const { setAuth } = useAuth();
-  // 1. Call the refresh endpoint to get a new access token
   const refresh = async () => {
-    const response = await axios.get('/token/refresh', {
-      withCredentials: true, // this will send the refresh token we stored in the browser's cookies
-    });
+    const response = await axios.get('/token/refresh');
 
     setAuth((prev) => {
-      return { ...prev, accessToken: response.data.accessToken };
+      return {
+        ...prev,
+        accessToken: response.data.accessToken,
+        user: response.data.user,
+      };
     });
 
     return response.data.accessToken;

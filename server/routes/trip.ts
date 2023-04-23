@@ -63,7 +63,8 @@ tripRouter.get('/:id', verifyJwt, async (req, res) => {
       data: {
         trip: {
           ...trip.toObject(),
-          ...response.data.result,
+          photos: response.photos,
+          location: response.geometry.location,
         },
       },
     });
@@ -156,7 +157,7 @@ tripRouter.get('/:id/lodging', async (req, res) => {
         // @ts-ignore
         id: place._id,
         details: {
-          ...response.data.result,
+          ...response,
         },
       });
     }
@@ -198,7 +199,7 @@ tripRouter.get('/:id/itinerary', async (req, res) => {
         // @ts-ignore
         id: activity._id,
         details: {
-          ...response.data.result,
+          ...response,
         },
       });
     }

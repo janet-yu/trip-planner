@@ -127,7 +127,7 @@ userRouter.get('/:id/trips', async (req, res) => {
       id: place._id,
       details: {
         ...place.toObject(),
-        ...response.data.result,
+        ...response,
       },
     });
   }

@@ -1,16 +1,27 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 type CardProps = {
   backgroundImageUrl?: string;
   textPosition?: 'center' | 'bottomLeft';
   children: any;
+  link?: string;
 };
 
 type StyledDivProps = {
   backgroundImageUrl?: string;
   textPosition?: string;
 };
+
+const StyledLink = styled(Link)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+`;
 
 // todo: search up typescript syntax
 const StyledDiv = styled.div<StyledDivProps>`
@@ -52,6 +63,7 @@ const Card = (props: CardProps) => {
       backgroundImageUrl={props.backgroundImageUrl}
       textPosition={props.textPosition}
     >
+      {props.link && <StyledLink to={props.link} />}
       {props.children}
     </StyledDiv>
   );

@@ -7,6 +7,12 @@ import Card from '../../components/Card';
 import CardTitle from '../../components/Card/CardTitle';
 import CardSubtitle from '../../components/Card/CardSubtitle';
 import CardTextArea from '../../components/Card/CardTextArea';
+import styled from 'styled-components';
+
+const TripsContainer = styled.div`
+  max-width: 728px;
+  width: 70%;
+`;
 
 const UpcomingTrips = () => {
   const {
@@ -14,20 +20,19 @@ const UpcomingTrips = () => {
   } = useAuth();
   const { data: trips } = useFetchTrips(user._id as string);
 
-  console.log({ trips });
   const renderTrips = () => {
     return trips?.map((trip) => {
+      console.log({ trip });
       return (
         <Card
           backgroundImageUrl={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=${
-            trip.details.photos &&
-            (trip.details.photos[0] as any).photo_reference
+            trip.photos && (trip.photos[0] as any).photo_reference
           }&key=AIzaSyCpTac3TkWVqlwesacX7YFbZfqOuXLVU8g`}
-          link={`/trip/${trip.id}`}
+          link={`/trip/${trip._id}`}
         >
           <CardTextArea>
-            <CardTitle size='large'>{trip.details.title}</CardTitle>
-            <CardSubtitle>{trip.details.startDate}</CardSubtitle>
+            <CardTitle size='large'>{trip.title}</CardTitle>
+            <CardSubtitle>{trip.startDate}</CardSubtitle>
           </CardTextArea>
         </Card>
       );
@@ -37,7 +42,7 @@ const UpcomingTrips = () => {
   return (
     <PageContainer>
       <PageHeader title='Upcoming Trips' />
-      {renderTrips()}
+      <TripsContainer>{renderTrips()}</TripsContainer>
     </PageContainer>
   );
 };

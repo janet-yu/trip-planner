@@ -6,6 +6,18 @@ import verifyJwt from '../middleware/verifyJwt';
 
 const tripRouter = Router();
 
+export const extendTripObject = async (trip) => {
+  const tripDetails = await GoogleAPIService.getPlaceDetails(
+    trip.placeReferenceId
+  );
+
+  return {
+    ...trip.toObject(),
+    photos: tripDetails.photos,
+    geometry: tripDetails.geometry,
+  };
+};
+
 tripRouter.post('/', verifyJwt, async (req, res) => {
   try {
     const {
@@ -24,13 +36,14 @@ tripRouter.post('/', verifyJwt, async (req, res) => {
       startDate,
       endDate,
       activities,
+      // add photos and location
       userId,
     });
 
     res.status(201).json({
       status: RESPONSE_STATUSES.success,
       data: {
-        trip,
+        trip: await extendTripObject(trip),
       },
     });
   } catch (err) {
@@ -54,21 +67,14 @@ tripRouter.get('/:id', verifyJwt, async (req, res) => {
       });
     }
 
-    const response = await GoogleAPIService.getPlaceDetails(
-      trip.placeReferenceId
-    );
-
     res.status(200).json({
       status: RESPONSE_STATUSES.success,
       data: {
-        trip: {
-          ...trip.toObject(),
-          photos: response.photos,
-          location: response.geometry.location,
-        },
+        trip: await extendTripObject(trip),
       },
     });
   } catch (err) {
+    console.log({ err });
     res.status(500).json({
       status: 'error',
     });
@@ -123,7 +129,7 @@ tripRouter.patch('/:id', async (req, res) => {
     res.status(200).json({
       status: RESPONSE_STATUSES.success,
       data: {
-        trip: updatedTrip,
+        trip: await extendTripObject(updatedTrip),
       },
     });
   } catch (err) {

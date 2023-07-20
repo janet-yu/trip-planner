@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import GoogleAPIService from '../lib/googleAPI';
 import User from '../models/user';
 import Trip from '../models/trip';
 import { RESPONSE_STATUSES } from './utils/types';
+import { extendTripObject } from './trip';
 
 const userRouter = Router();
 
@@ -30,6 +30,7 @@ userRouter.post('/signup', async (req, res) => {
       },
     });
   } catch (err) {
+    console.log({ err });
     res.status(500).json({
       status: RESPONSE_STATUSES.error,
       message: 'Failed to create user.',
@@ -117,19 +118,8 @@ userRouter.get('/:id/trips', async (req, res) => {
 
   const tripResults = [];
 
-  for (const place of trips) {
-    const response = await GoogleAPIService.getPlaceDetails(
-      place.placeReferenceId
-    );
-
-    tripResults.push({
-      // @ts-ignore
-      id: place._id,
-      details: {
-        ...place.toObject(),
-        ...response,
-      },
-    });
+  for (const trip of trips) {
+    tripResults.push(await extendTripObject(trip));
   }
 
   return res.status(200).json({

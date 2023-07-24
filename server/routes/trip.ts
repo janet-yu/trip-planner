@@ -161,7 +161,7 @@ tripRouter.get('/:id/lodging', async (req, res) => {
 
       lodging.push({
         // @ts-ignore
-        id: place._id,
+        ...place.toObject(),
         details: {
           ...response,
         },
@@ -203,7 +203,7 @@ tripRouter.get('/:id/itinerary', async (req, res) => {
 
       itinerary.push({
         // @ts-ignore
-        id: activity._id,
+        ...activity.toObject(),
         details: {
           ...response,
         },

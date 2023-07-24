@@ -25,11 +25,13 @@ const ButtonWrapper = styled.div`
 const AddActivityModal = ({
   setModalClose,
   setTrip,
+  selectedDate,
   tripId,
 }: {
   setModalClose: any;
   tripId: string;
   setTrip: any;
+  selectedDate: Date;
 }) => {
   const {
     setValue,
@@ -58,7 +60,7 @@ const AddActivityModal = ({
       value: [
         {
           referenceId: values.activity.id,
-          date: new Date(),
+          date: selectedDate || new Date(),
         },
       ],
     };
@@ -93,7 +95,7 @@ const AddActivityModal = ({
                       fieldProps.field.onChange(e);
                       setValue(e.target.value);
                     }}
-                    inputName="activity.value"
+                    inputName='activity.value'
                     handleItemClick={(item) => {
                       setFieldValue('activity.id', item.value);
                       setFieldValue('activity.value', item.title);
@@ -104,7 +106,7 @@ const AddActivityModal = ({
                 )}
               </Field>
               <ButtonWrapper>
-                <Button variant="primary" type="submit">
+                <Button variant='primary' type='submit'>
                   Add
                 </Button>
               </ButtonWrapper>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Select from 'react-select';
 import moment from 'moment';
 import styled from 'styled-components';
 import { device } from '../../utils/mediaQueries';
@@ -158,6 +159,7 @@ const Trip = () => {
   });
   const [lodging, setLodging] = useState([]);
   const [itinerary, setItinerary] = useState<any>([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const { isLoaded, loadError } = useUseLoadScript();
   const [modalOpen, setModalOpen] = useState({
     open: false,
@@ -166,8 +168,6 @@ const Trip = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const axiosPrivate = useAxiosPrivate();
-
-  console.log({ trip });
 
   const handleRemoveLodging = async (lodgeId: string) => {
     const request = {
@@ -210,6 +210,7 @@ const Trip = () => {
           const { data } = await axiosPrivate.get(`/trips/${id}` as string);
 
           setTrip(data.data.trip);
+          setSelectedDate(new Date(data.data.trip.startDate));
         } catch (err) {
           // Basically, redirect the user back to the page they were on before getting booted to login
           navigate('/login', { state: { from: location }, replace: true });
@@ -296,6 +297,7 @@ const Trip = () => {
             setModalClose={handleModalClose}
             tripId={trip._id}
             setTrip={setTrip}
+            selectedDate={selectedDate}
           />
         );
       case ModalForm.SAVE_TRIP:
@@ -306,6 +308,91 @@ const Trip = () => {
           />
         );
     }
+  };
+
+  const generateDateOptions = () => {
+    const numDays = moment(trip?.endDate).diff(moment(trip?.startDate), 'days');
+    let dates = [];
+
+    for (let i = 0; i < numDays; i++) {
+      const option = {
+        value: moment(trip?.startDate).add(i, 'days').toDate(),
+        label: moment(trip.startDate).add(i, 'days').format('MMM Do YYYY'),
+      };
+
+      dates.push(option);
+    }
+
+    return dates;
+  };
+
+  const onDateSelect = (option: any) => {
+    setSelectedDate(option.value);
+  };
+
+  const renderLodging = () => {
+    const selectedDateMoment = moment(selectedDate);
+
+    const filteredLodging = lodging.filter(
+      (place: {
+        referenceId: string;
+        checkinDate: Date;
+        checkoutDate: Date;
+      }) => {
+        return selectedDateMoment.isBetween(
+          moment(place.checkinDate),
+          moment(place.checkoutDate),
+          'day',
+          '[]'
+        );
+      }
+    );
+
+    return filteredLodging.map((place: any) => (
+      <PlaceCard
+        key={place.details.place_id}
+        title={place.details.name}
+        subtitle={place.details.formatted_address}
+        description={place.details.editorial_summary?.overview}
+        mBottom={16}
+        onRemove={() => handleRemoveLodging(place._id)}
+      />
+    ));
+  };
+
+  const renderItinerary = () => {
+    return itinerary
+      .filter((activity: any) => {
+        return moment(activity.date).isSame(moment(selectedDate), 'day');
+      })
+      .map((activity: any, idx: any) => {
+        return (
+          <Draggable draggableId={`draggable-${idx}`} index={idx} key={idx}>
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+              >
+                {/* <button {...provided.dragHandleProps}>Drag</button> */}
+                <PlaceCard
+                  key={activity.details.place_id}
+                  onRemove={() => handleRemoveItineraryActivity(activity._id)}
+                  title={activity.details.name}
+                  subtitle={activity.details.formatted_address}
+                  description={activity.details.editorial_summary?.overview}
+                  mBottom={16}
+                  img={
+                    activity.details.photos?.length
+                      ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photo_reference=${activity.details.photos[0].photo_reference}&key=AIzaSyCpTac3TkWVqlwesacX7YFbZfqOuXLVU8g`
+                      : 'https://upload.wikimedia.org/wikipedia/en/thumb/c/c1/Cloud_Gate_%28The_Bean%29_from_east%27.jpg/340px-Cloud_Gate_%28The_Bean%29_from_east%27.jpg'
+                  }
+                />
+              </div>
+            )}
+          </Draggable>
+        );
+      });
   };
 
   return (
@@ -343,19 +430,20 @@ const Trip = () => {
       <MainContentContainer>
         <TripDetailsContainer>
           <SectionsContainer>
+            <div
+              style={{
+                marginBottom: '12px',
+              }}
+            >
+              <Select
+                options={generateDateOptions()}
+                defaultValue={generateDateOptions()[0]}
+                onChange={onDateSelect}
+              />
+            </div>
             <Section>
               <SectionTitle>Lodging</SectionTitle>
-              {!!lodging.length &&
-                lodging.map((place: any) => (
-                  <PlaceCard
-                    key={place.details.place_id}
-                    title={place.details.name}
-                    subtitle={place.details.formatted_address}
-                    description={place.details.editorial_summary?.overview}
-                    mBottom={16}
-                    onRemove={() => handleRemoveLodging(place.id)}
-                  />
-                ))}
+              {!!lodging.length && renderLodging()}
               <AddItemButton
                 onClick={() => {
                   setModalOpen({
@@ -372,9 +460,8 @@ const Trip = () => {
               {/* @ts-ignore */}
               <DragDropContext
                 onDragEnd={(param) => {
-                  console.log({ param });
-                  const sourceIndex = param.source.index;
                   const destIndex = param.destination?.index;
+                  const sourceIndex = param.source.index;
 
                   if (destIndex !== undefined) {
                     const newItinerary = itinerary.slice(0);
@@ -391,46 +478,7 @@ const Trip = () => {
                 <Droppable droppableId='droppable-1'>
                   {(provided) => (
                     <div ref={provided.innerRef} {...provided.droppableProps}>
-                      {!!itinerary.length &&
-                        itinerary.map((activity: any, idx: any) => {
-                          return (
-                            <Draggable
-                              draggableId={`draggable-${idx}`}
-                              index={idx}
-                              key={idx}
-                            >
-                              {(provided) => (
-                                <div
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                >
-                                  {/* <button {...provided.dragHandleProps}>Drag</button> */}
-                                  <PlaceCard
-                                    key={activity.details.place_id}
-                                    onRemove={() =>
-                                      handleRemoveItineraryActivity(activity.id)
-                                    }
-                                    title={activity.details.name}
-                                    subtitle={
-                                      activity.details.formatted_address
-                                    }
-                                    description={
-                                      activity.details.editorial_summary
-                                        ?.overview
-                                    }
-                                    mBottom={16}
-                                    img={
-                                      activity.details.photos?.length
-                                        ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photo_reference=${activity.details.photos[0].photo_reference}&key=AIzaSyCpTac3TkWVqlwesacX7YFbZfqOuXLVU8g`
-                                        : 'https://upload.wikimedia.org/wikipedia/en/thumb/c/c1/Cloud_Gate_%28The_Bean%29_from_east%27.jpg/340px-Cloud_Gate_%28The_Bean%29_from_east%27.jpg'
-                                    }
-                                  />
-                                </div>
-                              )}
-                            </Draggable>
-                          );
-                        })}
+                      {!!itinerary.length && renderItinerary()}
                       {provided.placeholder}
                     </div>
                   )}
@@ -462,7 +510,7 @@ const Trip = () => {
           ></GoogleMap>
         </MapContainer>
 
-        {modalOpen.open && renderModal(modalOpen.modalForm)}
+        {modalOpen.open && selectedDate && renderModal(modalOpen.modalForm)}
       </MainContentContainer>
     </div>
   );

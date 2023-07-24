@@ -6,6 +6,7 @@ const userSchema = new Schema({
   email: String,
   firstName: String,
   lastName: String,
+  refreshToken: String,
 });
 
 // Models = what we use to actually interact with the database

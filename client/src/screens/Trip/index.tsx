@@ -6,7 +6,7 @@ import { device } from '../../utils/mediaQueries';
 import useUseLoadScript from '../../hooks/useUseLoadScript';
 import Navigation from '../../components/Navigation';
 import PlaceCard from '../../components/PlaceCard';
-import { GoogleMap } from '@react-google-maps/api';
+import { GoogleMap, Marker } from '@react-google-maps/api';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import AddLodgingModal from './AddLodgingModal';
@@ -15,7 +15,7 @@ import AddActivityModal from './AddActivityModal';
 import Button from '../../components/Button';
 import SaveTripCodeModal from './SaveTripCodeModal';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faLocationDot, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 const Header = styled.header<{ bgUrl?: string }>`
   background: url(${(props) => props.bgUrl});
@@ -158,6 +158,7 @@ const Trip = () => {
     lat: 0,
     lng: 0,
   });
+  const [zoom, setMapZoom] = useState(12);
   const [lodging, setLodging] = useState([]);
   const [itinerary, setItinerary] = useState<any>([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -361,6 +362,16 @@ const Trip = () => {
             onClick: () => handleRemoveLodging(place._id),
             icon: faTrashAlt,
           },
+          {
+            onClick: () => {
+              setMapCenter({
+                lat: place.details.geometry.location.lat,
+                lng: place.details.geometry.location.lng,
+              });
+              setMapZoom(16);
+            },
+            icon: faLocationDot,
+          },
         ]}
       />
     ));
@@ -392,6 +403,16 @@ const Trip = () => {
                       onClick: () =>
                         handleRemoveItineraryActivity(activity._id),
                       icon: faTrashAlt,
+                    },
+                    {
+                      onClick: () => {
+                        setMapCenter({
+                          lat: activity.details.geometry.location.lat,
+                          lng: activity.details.geometry.location.lng,
+                        });
+                        setMapZoom(16);
+                      },
+                      icon: faLocationDot,
                     },
                   ]}
                   img={
@@ -509,7 +530,6 @@ const Trip = () => {
             </Section>
             <Section>
               <SectionTitle>People</SectionTitle>
-
               <AddItemButton>+ Add Person</AddItemButton>
             </Section>
           </SectionsContainer>
@@ -518,8 +538,10 @@ const Trip = () => {
           <GoogleMap
             mapContainerStyle={mapContainerStyle}
             center={mapCenter}
-            zoom={12}
-          ></GoogleMap>
+            zoom={zoom}
+          >
+            <Marker position={mapCenter} />
+          </GoogleMap>
         </MapContainer>
 
         {modalOpen.open && selectedDate && renderModal(modalOpen.modalForm)}

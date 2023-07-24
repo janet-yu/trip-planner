@@ -80,12 +80,10 @@ type PlaceCardProps = {
   description: string;
   img?: string;
   onRemove?: MouseEventHandler;
-  actionButtons: [
-    {
-      icon: IconDefinition;
-      onClick: any;
-    }
-  ];
+  actionButtons: {
+    icon: IconDefinition;
+    onClick: any;
+  }[];
 } & SpacingProps;
 
 const PlaceCard = (

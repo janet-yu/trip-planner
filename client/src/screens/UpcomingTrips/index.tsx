@@ -8,6 +8,7 @@ import CardTitle from '../../components/Card/CardTitle';
 import CardSubtitle from '../../components/Card/CardSubtitle';
 import CardTextArea from '../../components/Card/CardTextArea';
 import styled from 'styled-components';
+import moment from 'moment';
 
 const TripsContainer = styled.div`
   max-width: 728px;
@@ -22,7 +23,6 @@ const UpcomingTrips = () => {
 
   const renderTrips = () => {
     return trips?.map((trip) => {
-      console.log({ trip });
       return (
         <Card
           backgroundImageUrl={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=${
@@ -32,7 +32,11 @@ const UpcomingTrips = () => {
         >
           <CardTextArea>
             <CardTitle size='large'>{trip.title}</CardTitle>
-            <CardSubtitle>{trip.startDate}</CardSubtitle>
+            <CardSubtitle>
+              {`${moment(trip.startDate).format('MMM DD YYYY')} - ${moment(
+                trip.endDate
+              ).format('MMM DD YYYY')}`}
+            </CardSubtitle>
           </CardTextArea>
         </Card>
       );

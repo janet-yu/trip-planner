@@ -1,4 +1,4 @@
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { MouseEventHandler } from 'react';
 import styled from 'styled-components';
@@ -60,7 +60,7 @@ const CardImage = styled.img`
 
 const CardHeaderText = styled.div``;
 
-const CardRemoveButton = styled.button`
+const CardActionButton = styled.button`
   transition: all 0.3s ease-in-out;
   width: 32px;
   height: 32px;
@@ -72,18 +72,34 @@ const CardRemoveButton = styled.button`
   }
 `;
 
+const CardActionButtonsContainer = styled.div``;
+
 type PlaceCardProps = {
   title: string;
   subtitle: string;
   description: string;
   img?: string;
   onRemove?: MouseEventHandler;
+  actionButtons: [
+    {
+      icon: IconDefinition;
+      onClick: any;
+    }
+  ];
 } & SpacingProps;
 
 const PlaceCard = (
   props: PlaceCardProps & React.HTMLAttributes<HTMLDivElement>
 ) => {
-  const { title, subtitle, description, img, onRemove, ...rest } = props;
+  const {
+    title,
+    subtitle,
+    description,
+    img,
+    onRemove,
+    actionButtons,
+    ...rest
+  } = props;
 
   return (
     <Card {...rest}>
@@ -93,9 +109,15 @@ const PlaceCard = (
             <CardTitle>{title}</CardTitle>
             <CardSubtitle>{subtitle}</CardSubtitle>
           </CardHeaderText>
-          <CardRemoveButton onClick={onRemove}>
-            <FontAwesomeIcon icon={faTrashAlt} />
-          </CardRemoveButton>
+          <CardActionButtonsContainer>
+            {actionButtons.map((action) => {
+              return (
+                <CardActionButton onClick={action.onClick}>
+                  <FontAwesomeIcon icon={action.icon} />
+                </CardActionButton>
+              );
+            })}
+          </CardActionButtonsContainer>
         </CardHeader>
         <CardDescriptionWrapper>
           <CardDescription>{description}</CardDescription>

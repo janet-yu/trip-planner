@@ -15,6 +15,7 @@ import AddActivityModal from './AddActivityModal';
 import Button from '../../components/Button';
 import SaveTripCodeModal from './SaveTripCodeModal';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 const Header = styled.header<{ bgUrl?: string }>`
   background: url(${(props) => props.bgUrl});
@@ -355,7 +356,12 @@ const Trip = () => {
         subtitle={place.details.formatted_address}
         description={place.details.editorial_summary?.overview}
         mBottom={16}
-        onRemove={() => handleRemoveLodging(place._id)}
+        actionButtons={[
+          {
+            onClick: () => handleRemoveLodging(place._id),
+            icon: faTrashAlt,
+          },
+        ]}
       />
     ));
   };
@@ -377,11 +383,17 @@ const Trip = () => {
                 {/* <button {...provided.dragHandleProps}>Drag</button> */}
                 <PlaceCard
                   key={activity.details.place_id}
-                  onRemove={() => handleRemoveItineraryActivity(activity._id)}
                   title={activity.details.name}
                   subtitle={activity.details.formatted_address}
                   description={activity.details.editorial_summary?.overview}
                   mBottom={16}
+                  actionButtons={[
+                    {
+                      onClick: () =>
+                        handleRemoveItineraryActivity(activity._id),
+                      icon: faTrashAlt,
+                    },
+                  ]}
                   img={
                     activity.details.photos?.length
                       ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photo_reference=${activity.details.photos[0].photo_reference}&key=AIzaSyCpTac3TkWVqlwesacX7YFbZfqOuXLVU8g`

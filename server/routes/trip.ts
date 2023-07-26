@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { Router } from 'express';
 import Trip from '../models/trip';
 import GoogleAPIService from '../lib/googleAPI';
@@ -74,7 +75,6 @@ tripRouter.get('/:id', verifyJwt, async (req, res) => {
       },
     });
   } catch (err) {
-    console.log({ err });
     res.status(500).json({
       status: 'error',
     });
@@ -181,6 +181,9 @@ tripRouter.get('/:id/lodging', async (req, res) => {
   }
 });
 
+/**
+ * ITINERARY ROUTES
+ */
 tripRouter.get('/:id/itinerary', async (req, res) => {
   const { id } = req.params;
 
@@ -222,5 +225,54 @@ tripRouter.get('/:id/itinerary', async (req, res) => {
     });
   }
 });
+
+tripRouter.patch(
+  '/:tripId/itinerary/activity/:activityId',
+  async (req, res) => {
+    try {
+      const { tripId, activityId } = req.params;
+      const { updates } = req.body;
+
+      const trip = await Trip.findById(tripId);
+      let updatedActivity = trip.itinerary
+        .find((activity) => activity._id.toString() === activityId)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        .toObject();
+
+      updatedActivity = {
+        ...updatedActivity,
+        ...updates,
+        ...(Boolean(updates.date) && { date: new Date(updates.date) }),
+      };
+
+      const updatedTrip = await Trip.findOneAndUpdate(
+        {
+          _id: new Types.ObjectId(tripId),
+          'itinerary._id': new Types.ObjectId(activityId),
+        },
+        {
+          $set: {
+            'itinerary.$': updatedActivity,
+          },
+        },
+        {
+          new: true,
+        }
+      );
+
+      res.status(200).json({
+        status: RESPONSE_STATUSES.success,
+        data: {
+          trip: await extendTripObject(updatedTrip),
+        },
+      });
+    } catch (err) {
+      res.status(500).json({
+        status: RESPONSE_STATUSES.error,
+      });
+    }
+  }
+);
 
 export default tripRouter;

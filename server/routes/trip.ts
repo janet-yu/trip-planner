@@ -231,7 +231,7 @@ tripRouter.post('/:tripId/itinerary', async (req, res) => {
     const { tripId } = req.params;
     const { activity } = req.body;
 
-    const updated = await Trip.findByIdAndUpdate(
+    const updatedTrip = await Trip.findByIdAndUpdate(
       tripId,
       {
         $push: {
@@ -244,7 +244,7 @@ tripRouter.post('/:tripId/itinerary', async (req, res) => {
     res.status(201).json({
       status: RESPONSE_STATUSES.success,
       data: {
-        trip: await extendTripObject(updated),
+        trip: await extendTripObject(updatedTrip),
       },
     });
   } catch (err) {

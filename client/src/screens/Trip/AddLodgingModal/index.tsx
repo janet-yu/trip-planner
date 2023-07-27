@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React  from 'react';
 import styled from 'styled-components';
 import usePlacesAutocomplete from 'use-places-autocomplete';
 import Modal from '../../../components/Modal';

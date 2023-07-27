@@ -26,7 +26,8 @@ const ModalPopup = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 24px;
-  min-width: 40%;
+  width: 40%;
+  max-width: 500px;
 `;
 
 const Modal = ({

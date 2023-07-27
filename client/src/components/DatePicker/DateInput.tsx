@@ -53,15 +53,19 @@ const Input = styled.input`
   }
 `;
 
-const DateInput = (props: any) => {
+const DateInput = (props: {
+  variant?: 'primary' | 'secondary';
+  name: string;
+  selectedDate: Date;
+  onDateChange: React.Dispatch<React.SetStateAction<Date>>;
+  setCalendarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const [inputFocused, setInputFocused] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
-  const [inputValue, setInputValue] = useState(
-    dateHelpers.dateToString(props.selectedDate)
-  );
+  const [inputValue, setInputValue] = useState(dateHelpers.dateToString(props.selectedDate));
   const [cursor, setCursor] = useState({
     start: 0,
-    end: 0,
+    end: 0
   });
   const ref = useRef<HTMLInputElement | null>(null);
 
@@ -80,8 +84,8 @@ const DateInput = (props: any) => {
   };
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    let caretStart = evt.target.selectionStart;
-    let caretEnd = evt.target.selectionEnd;
+    const caretStart = evt.target.selectionStart;
+    const caretEnd = evt.target.selectionEnd;
 
     const currentValue = evt.target.value;
 
@@ -91,7 +95,7 @@ const DateInput = (props: any) => {
 
     // Move everything to the right every time we input a number
     // Place slashes in the correct place
-    let valueSplit = sanitizedValue.split('');
+    const valueSplit = sanitizedValue.split('');
 
     if (valueSplit.length >= 2) {
       valueSplit.splice(2, 0, '/');
@@ -108,7 +112,7 @@ const DateInput = (props: any) => {
     if (caretStart && caretEnd) {
       setCursor({
         start: caretStart,
-        end: caretEnd,
+        end: caretEnd
       });
     }
 

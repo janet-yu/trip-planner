@@ -29,7 +29,15 @@ const CalendarContainer = styled.div`
 `;
 
 // Refactor to render Calendar and Input separately here
-const DatePicker = (props: any) => {
+const DatePicker = (props: {
+  variant?: 'primary' | 'secondary';
+  name: string;
+  label?: string;
+  onChange: any;
+  disableDatesBefore?: any;
+  styles?: any;
+  selectedDate?: Date;
+}) => {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -49,9 +57,7 @@ const DatePicker = (props: any) => {
           />
         </CalendarContainer>
       )}
-      {props.label && (
-        <InputLabel htmlFor={props.name}>{props.label}</InputLabel>
-      )}
+      {props.label && <InputLabel htmlFor={props.name}>{props.label}</InputLabel>}
       <Input
         selectedDate={selectedDate}
         setCalendarOpen={setCalendarOpen}

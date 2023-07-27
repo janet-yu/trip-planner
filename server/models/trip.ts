@@ -1,4 +1,4 @@
-import mongoose, { model, Schema } from 'mongoose';
+import mongoose, { Types, model, Schema } from 'mongoose';
 
 const tripSchema = new Schema(
   {
@@ -17,6 +17,7 @@ const tripSchema = new Schema(
       {
         referenceId: String,
         date: Date,
+        notes: String,
       },
     ],
     people: Array,
@@ -25,6 +26,6 @@ const tripSchema = new Schema(
   { timestamps: true }
 ); // timestamps automatically generates timestamps for us
 
-const Trip = mongoose.model('Trip', tripSchema);
+const Trip = model('Trip', tripSchema);
 
 export default Trip;

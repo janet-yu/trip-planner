@@ -1,4 +1,4 @@
-import { IconDefinition, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faComment } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { MouseEventHandler } from 'react';
 import styled from 'styled-components';
@@ -10,7 +10,7 @@ const Card = styled.div<Partial<PlaceCardProps>>`
   background: ${(props) => props.theme.colors.grey['50']};
   display: flex;
   overflow: hidden;
-  max-height: 224px;
+  max-height: 248px;
   ${(props) => generateSpacingProps(props)}
 `;
 
@@ -39,7 +39,7 @@ const CardSubtitle = styled.p`
 
 const CardDescriptionWrapper = styled.div`
   overflow: auto;
-  height: 50%;
+  height: 60%;
   margin-top: 16px;
 `;
 
@@ -72,6 +72,14 @@ const CardActionButton = styled.button`
   }
 `;
 
+const CardNotes = styled.div`
+  background-color: #ddd;
+  padding: 8px;
+  border-radius: 4px;
+  font-style: italic;
+  margin-bottom: 12px;
+`;
+
 const CardActionButtonsContainer = styled.div``;
 
 type PlaceCardProps = {
@@ -80,24 +88,15 @@ type PlaceCardProps = {
   description: string;
   img?: string;
   onRemove?: MouseEventHandler;
+  notes?: string;
   actionButtons: {
     icon: IconDefinition;
     onClick: any;
   }[];
 } & SpacingProps;
 
-const PlaceCard = (
-  props: PlaceCardProps & React.HTMLAttributes<HTMLDivElement>
-) => {
-  const {
-    title,
-    subtitle,
-    description,
-    img,
-    onRemove,
-    actionButtons,
-    ...rest
-  } = props;
+const PlaceCard = (props: PlaceCardProps & React.HTMLAttributes<HTMLDivElement>) => {
+  const { title, subtitle, description, img, onRemove, actionButtons, notes, ...rest } = props;
 
   return (
     <Card {...rest}>
@@ -108,9 +107,9 @@ const PlaceCard = (
             <CardSubtitle>{subtitle}</CardSubtitle>
           </CardHeaderText>
           <CardActionButtonsContainer>
-            {actionButtons.map((action) => {
+            {actionButtons.map((action, idx) => {
               return (
-                <CardActionButton onClick={action.onClick}>
+                <CardActionButton onClick={action.onClick} key={idx}>
                   <FontAwesomeIcon icon={action.icon} />
                 </CardActionButton>
               );
@@ -118,6 +117,11 @@ const PlaceCard = (
           </CardActionButtonsContainer>
         </CardHeader>
         <CardDescriptionWrapper>
+          {notes && (
+            <CardNotes>
+              <FontAwesomeIcon icon={faComment} /> {notes}
+            </CardNotes>
+          )}
           <CardDescription>{description}</CardDescription>
         </CardDescriptionWrapper>
       </CardDetails>

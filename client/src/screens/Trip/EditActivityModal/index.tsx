@@ -28,7 +28,7 @@ const EditActivityModal = ({
 }) => {
   const initialState = {
     date: undefined,
-    notes: ''
+    notes: activity.notes || ''
   };
 
   const handleSubmitData = async (values: { date?: Date; notes?: string }) => {

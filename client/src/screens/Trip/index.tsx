@@ -15,7 +15,9 @@ import AddActivityModal from './AddActivityModal';
 import Button from '../../components/Button';
 import SaveTripCodeModal from './SaveTripCodeModal';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import { faLocationDot, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faLocationDot, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import Box from '../../components/Box';
+import EditActivityModal from './EditActivityModal';
 
 const Header = styled.header<{ bgUrl?: string }>`
   background: url(${(props) => props.bgUrl});
@@ -134,6 +136,7 @@ enum ModalForm {
   ADD_LODGING,
   ADD_ACTIVITY,
   SAVE_TRIP,
+  EDIT_ACTIVITY
 }
 
 interface Trip {
@@ -147,25 +150,28 @@ interface Trip {
 
 const mapContainerStyle = {
   width: '100%',
-  height: '100%',
+  height: '100%'
 };
 
 const Trip = () => {
   const { id } = useParams();
-  const [trip, setTrip] =
-    useState<(Trip & Partial<google.maps.places.PlaceResult>) | null>(null);
+  const [trip, setTrip] = useState<(Trip & Partial<google.maps.places.PlaceResult>) | null>(null);
   const [mapCenter, setMapCenter] = useState<{ lat: any; lng: any }>({
     lat: 0,
-    lng: 0,
+    lng: 0
   });
   const [zoom, setMapZoom] = useState(12);
   const [lodging, setLodging] = useState([]);
   const [itinerary, setItinerary] = useState<any>([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const { isLoaded, loadError } = useUseLoadScript();
-  const [modalOpen, setModalOpen] = useState({
+  const [modalOpen, setModalOpen] = useState<{
+    open: boolean;
+    modalForm: ModalForm;
+    metadata?: any;
+  }>({
     open: false,
-    modalForm: 0,
+    modalForm: 0
   });
   const navigate = useNavigate();
   const location = useLocation();
@@ -176,14 +182,11 @@ const Trip = () => {
       op: 'remove',
       field: 'lodging',
       value: {
-        id: lodgeId,
-      },
+        id: lodgeId
+      }
     };
 
-    const updated = await axios.patch(
-      `${process.env.REACT_APP_API_URL}/trips/${id}`,
-      request
-    );
+    const updated = await axios.patch(`${process.env.REACT_APP_API_URL}/trips/${id}`, request);
 
     setTrip(updated.data.data.trip);
   };
@@ -193,14 +196,11 @@ const Trip = () => {
       op: 'remove',
       field: 'itinerary',
       value: {
-        id: activityId,
-      },
+        id: activityId
+      }
     };
 
-    const updated = await axios.patch(
-      `${process.env.REACT_APP_API_URL}/trips/${id}`,
-      request
-    );
+    const updated = await axios.patch(`${process.env.REACT_APP_API_URL}/trips/${id}`, request);
 
     setTrip(updated.data.data.trip);
   };
@@ -227,24 +227,20 @@ const Trip = () => {
     if (trip && trip.geometry) {
       setMapCenter({
         lat: trip.geometry?.location?.lat,
-        lng: trip.geometry?.location?.lng,
+        lng: trip.geometry?.location?.lng
       });
     }
   }, [trip?._id]);
 
   useEffect(() => {
     const getLodging = async () => {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/trips/${id}/lodging`
-      );
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/trips/${id}/lodging`);
 
       setLodging(response.data.data.lodging);
     };
 
     const getItinerary = async () => {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/trips/${id}/itinerary`
-      );
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/trips/${id}/itinerary`);
 
       setItinerary(response.data.data.itinerary);
     };
@@ -256,13 +252,13 @@ const Trip = () => {
   const handleItineraryChange = async (newItinerary: any) => {
     const mappedItinerary = newItinerary.map((activity: any) => ({
       referenceId: activity.details.place_id,
-      date: new Date(),
+      date: new Date()
     }));
 
     const request = {
       op: 'replace',
       field: 'itinerary',
-      value: mappedItinerary,
+      value: mappedItinerary
     };
 
     await axios.patch(`${process.env.REACT_APP_API_URL}/trips/${id}`, request);
@@ -279,19 +275,16 @@ const Trip = () => {
   const handleModalClose = () => {
     setModalOpen({
       open: false,
-      modalForm: 0,
+      metadata: {},
+      modalForm: 0
     });
   };
 
-  const renderModal = (modalForm: ModalForm) => {
+  const renderModal = (modalForm: ModalForm, metadata?: any) => {
     switch (modalForm) {
       case ModalForm.ADD_LODGING:
         return (
-          <AddLodgingModal
-            setModalClose={handleModalClose}
-            tripId={trip._id}
-            setTrip={setTrip}
-          />
+          <AddLodgingModal setModalClose={handleModalClose} tripId={trip._id} setTrip={setTrip} />
         );
       case ModalForm.ADD_ACTIVITY:
         return (
@@ -303,10 +296,14 @@ const Trip = () => {
           />
         );
       case ModalForm.SAVE_TRIP:
+        return <SaveTripCodeModal setModalClose={handleModalClose} tripId={trip._id} />;
+      case ModalForm.EDIT_ACTIVITY:
         return (
-          <SaveTripCodeModal
+          <EditActivityModal
+            setTrip={setTrip}
             setModalClose={handleModalClose}
             tripId={trip._id}
+            activity={(metadata as { activity: any }).activity}
           />
         );
     }
@@ -314,12 +311,14 @@ const Trip = () => {
 
   const generateDateOptions = () => {
     const numDays = moment(trip?.endDate).diff(moment(trip?.startDate), 'days');
-    let dates = [];
+    const dates = [];
 
     for (let i = 0; i < numDays; i++) {
       const option = {
-        value: moment(trip?.startDate).add(i, 'days').toDate(),
-        label: moment(trip.startDate).add(i, 'days').format('MMM Do YYYY'),
+        value: moment(trip?.startDate)
+          .add(i, 'days')
+          .toDate(),
+        label: moment(trip.startDate).add(i, 'days').format('MMM Do YYYY')
       };
 
       dates.push(option);
@@ -336,11 +335,7 @@ const Trip = () => {
     const selectedDateMoment = moment(selectedDate);
 
     const filteredLodging = lodging.filter(
-      (place: {
-        referenceId: string;
-        checkinDate: Date;
-        checkoutDate: Date;
-      }) => {
+      (place: { referenceId: string; checkinDate: Date; checkoutDate: Date }) => {
         return selectedDateMoment.isBetween(
           moment(place.checkinDate),
           moment(place.checkoutDate),
@@ -360,18 +355,18 @@ const Trip = () => {
         actionButtons={[
           {
             onClick: () => handleRemoveLodging(place._id),
-            icon: faTrashAlt,
+            icon: faTrashAlt
           },
           {
             onClick: () => {
               setMapCenter({
                 lat: place.details.geometry.location.lat,
-                lng: place.details.geometry.location.lng,
+                lng: place.details.geometry.location.lng
               });
-              setMapZoom(16);
+              setMapZoom(15);
             },
-            icon: faLocationDot,
-          },
+            icon: faLocationDot
+          }
         ]}
       />
     ));
@@ -389,8 +384,7 @@ const Trip = () => {
               <div
                 ref={provided.innerRef}
                 {...provided.draggableProps}
-                {...provided.dragHandleProps}
-              >
+                {...provided.dragHandleProps}>
                 {/* <button {...provided.dragHandleProps}>Drag</button> */}
                 <PlaceCard
                   key={activity.details.place_id}
@@ -400,20 +394,31 @@ const Trip = () => {
                   mBottom={16}
                   actionButtons={[
                     {
-                      onClick: () =>
-                        handleRemoveItineraryActivity(activity._id),
-                      icon: faTrashAlt,
+                      onClick: () => handleRemoveItineraryActivity(activity._id),
+                      icon: faTrashAlt
                     },
                     {
                       onClick: () => {
                         setMapCenter({
                           lat: activity.details.geometry.location.lat,
-                          lng: activity.details.geometry.location.lng,
+                          lng: activity.details.geometry.location.lng
                         });
-                        setMapZoom(16);
+                        setMapZoom(15);
                       },
-                      icon: faLocationDot,
+                      icon: faLocationDot
                     },
+                    {
+                      onClick: () => {
+                        setModalOpen({
+                          open: true,
+                          modalForm: ModalForm.EDIT_ACTIVITY,
+                          metadata: {
+                            activity
+                          }
+                        });
+                      },
+                      icon: faEdit
+                    }
                   ]}
                   img={
                     activity.details.photos?.length
@@ -430,32 +435,25 @@ const Trip = () => {
 
   return (
     <div>
-      {/* @ts-ignore */}
       <Header
         bgUrl={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=${
           trip.photos && (trip.photos[0] as any).photo_reference
-        }&key=AIzaSyCpTac3TkWVqlwesacX7YFbZfqOuXLVU8g`}
-      >
-        <Navigation variant='secondary' />
+        }&key=AIzaSyCpTac3TkWVqlwesacX7YFbZfqOuXLVU8g`}>
+        <Navigation variant="secondary" />
         <TripHeadingContainer>
           <TripDates>
-            {`${moment(trip.startDate).format('L')} - ${moment(
-              trip.endDate
-            ).format('L')}`}
+            {`${moment(trip.startDate).format('L')} - ${moment(trip.endDate).format('L')}`}
           </TripDates>
-          <TripHeading>
-            {(trip as unknown as { title: string }).title}
-          </TripHeading>
+          <TripHeading>{(trip as unknown as { title: string }).title}</TripHeading>
           <Button
-            variant='secondary'
+            variant="secondary"
             bold
             onClick={() => {
               setModalOpen({
                 open: true,
-                modalForm: ModalForm.SAVE_TRIP,
+                modalForm: ModalForm.SAVE_TRIP
               });
-            }}
-          >
+            }}>
             Save Trip
           </Button>
         </TripHeadingContainer>
@@ -463,17 +461,13 @@ const Trip = () => {
       <MainContentContainer>
         <TripDetailsContainer>
           <SectionsContainer>
-            <div
-              style={{
-                marginBottom: '12px',
-              }}
-            >
+            <Box mBottom={24}>
               <Select
                 options={generateDateOptions()}
                 defaultValue={generateDateOptions()[0]}
                 onChange={onDateSelect}
               />
-            </div>
+            </Box>
             <Section>
               <SectionTitle>Lodging</SectionTitle>
               {!!lodging.length && renderLodging()}
@@ -481,16 +475,14 @@ const Trip = () => {
                 onClick={() => {
                   setModalOpen({
                     open: true,
-                    modalForm: ModalForm.ADD_LODGING,
+                    modalForm: ModalForm.ADD_LODGING
                   });
-                }}
-              >
+                }}>
                 + Add Lodging
               </AddItemButton>
             </Section>
             <Section>
               <SectionTitle>Itinerary</SectionTitle>
-              {/* @ts-ignore */}
               <DragDropContext
                 onDragEnd={(param) => {
                   const destIndex = param.destination?.index;
@@ -498,17 +490,12 @@ const Trip = () => {
 
                   if (destIndex !== undefined) {
                     const newItinerary = itinerary.slice(0);
-                    newItinerary.splice(
-                      destIndex,
-                      0,
-                      newItinerary.splice(sourceIndex, 1)[0]
-                    );
+                    newItinerary.splice(destIndex, 0, newItinerary.splice(sourceIndex, 1)[0]);
                     setItinerary(newItinerary);
                     handleItineraryChange(newItinerary);
                   }
-                }}
-              >
-                <Droppable droppableId='droppable-1'>
+                }}>
+                <Droppable droppableId="droppable-1">
                   {(provided) => (
                     <div ref={provided.innerRef} {...provided.droppableProps}>
                       {!!itinerary.length && renderItinerary()}
@@ -521,10 +508,9 @@ const Trip = () => {
                 onClick={() => {
                   setModalOpen({
                     open: true,
-                    modalForm: ModalForm.ADD_ACTIVITY,
+                    modalForm: ModalForm.ADD_ACTIVITY
                   });
-                }}
-              >
+                }}>
                 + Add Activity
               </AddItemButton>
             </Section>
@@ -535,16 +521,12 @@ const Trip = () => {
           </SectionsContainer>
         </TripDetailsContainer>
         <MapContainer>
-          <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            center={mapCenter}
-            zoom={zoom}
-          >
+          <GoogleMap mapContainerStyle={mapContainerStyle} center={mapCenter} zoom={zoom}>
             <Marker position={mapCenter} />
           </GoogleMap>
         </MapContainer>
 
-        {modalOpen.open && selectedDate && renderModal(modalOpen.modalForm)}
+        {modalOpen.open && selectedDate && renderModal(modalOpen.modalForm, modalOpen.metadata)}
       </MainContentContainer>
     </div>
   );

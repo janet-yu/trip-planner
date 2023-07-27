@@ -39,7 +39,9 @@ const DatePicker = (props: {
   selectedDate?: Date;
 }) => {
   const [calendarOpen, setCalendarOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(
+    props.selectedDate ? props.selectedDate : new Date()
+  );
 
   useEffect(() => {
     props.onChange(props.name, selectedDate);

@@ -204,6 +204,8 @@ tripRouter.get('/:id/itinerary', async (req, res) => {
         activity.referenceId
       );
 
+      console.log({ activity });
+
       itinerary.push({
         // @ts-ignore
         ...activity.toObject(),
@@ -235,6 +237,8 @@ tripRouter.patch(
 
       const trip = await Trip.findById(tripId);
       let updatedActivity = trip.itinerary
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         .find((activity) => activity._id.toString() === activityId)
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore

@@ -350,6 +350,7 @@ const Trip = () => {
         key={place.details.place_id}
         title={place.details.name}
         subtitle={place.details.formatted_address}
+        subtitleLink={place.details.url}
         description={place.details.editorial_summary?.overview}
         mBottom={16}
         actionButtons={[
@@ -378,6 +379,7 @@ const Trip = () => {
         return moment(activity.date).isSame(moment(selectedDate), 'day');
       })
       .map((activity: any, idx: any) => {
+        console.log({ activity });
         return (
           <Draggable draggableId={`draggable-${idx}`} index={idx} key={idx}>
             {(provided) => (
@@ -390,8 +392,10 @@ const Trip = () => {
                   key={activity.details.place_id}
                   title={activity.details.name}
                   subtitle={activity.details.formatted_address}
+                  subtitleLink={activity.details.url}
                   description={activity.details.editorial_summary?.overview}
                   mBottom={16}
+                  notes={activity.notes}
                   actionButtons={[
                     {
                       onClick: () => handleRemoveItineraryActivity(activity._id),

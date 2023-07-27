@@ -18,27 +18,26 @@ const TripsContainer = styled.div`
 
 const UpcomingTrips = () => {
   const {
-    auth: { user },
+    auth: { user }
   } = useAuth();
   const { data: trips } = useFetchTrips(user._id as string);
 
   const renderTrips = () => {
     return trips?.map((trip) => {
       return (
-        <Box mBottom={12}>
+        <Box mBottom={12} key={trip._id}>
           <Card
             backgroundImageUrl={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=${
               trip.photos && (trip.photos[0] as any).photo_reference
             }&key=AIzaSyCpTac3TkWVqlwesacX7YFbZfqOuXLVU8g`}
-            link={`/trip/${trip._id}`}
-          >
+            link={`/trip/${trip._id}`}>
             <CardTextArea>
-              <CardTitle size='large'>{trip.title}</CardTitle>
               <CardSubtitle>
-                {`${moment(trip.startDate).format('MMM DD YYYY')} - ${moment(
-                  trip.endDate
-                ).format('MMM DD YYYY')}`}
+                {`${moment(trip.startDate).format('MMM DD YYYY')} - ${moment(trip.endDate).format(
+                  'MMM DD YYYY'
+                )}`}
               </CardSubtitle>
+              <CardTitle size="large">{trip.title}</CardTitle>
             </CardTextArea>
           </Card>
         </Box>
@@ -48,7 +47,7 @@ const UpcomingTrips = () => {
 
   return (
     <PageContainer>
-      <PageHeader title='Upcoming Trips' />
+      <PageHeader title="Upcoming Trips" />
       <TripsContainer>{renderTrips()}</TripsContainer>
     </PageContainer>
   );

@@ -61,14 +61,8 @@ const CalendarViewContainer = styled.div<{ view: CalendarView }>`
 const CalendarViewGrid = styled.div<{ view: CalendarView }>`
   display: grid;
   gap: 4px;
-  grid-template-columns: repeat(
-    ${(props) => (props.view === CalendarView.Day ? 7 : 4)},
-    1fr
-  );
-  grid-template-rows: repeat(
-    ${(props) => (props.view === CalendarView.Day ? 4 : 3)},
-    1fr
-  );
+  grid-template-columns: repeat(${(props) => (props.view === CalendarView.Day ? 7 : 4)}, 1fr);
+  grid-template-rows: repeat(${(props) => (props.view === CalendarView.Day ? 4 : 3)}, 1fr);
   justify-items: center;
   flex: 1;
 `;
@@ -80,8 +74,7 @@ const DateIndicator = styled.button<{
 }>`
   border-radius: 100%;
   padding: 5px;
-  background: ${(props) =>
-    props.selected ? props.theme.colors.primary['500'] : 'transparent'};
+  background: ${(props) => (props.selected ? props.theme.colors.primary['500'] : 'transparent')};
   color: ${(props) => (props.selected ? 'white' : 'black')};
   font-size: 12px;
   aspect-ratio: 1;
@@ -133,7 +126,7 @@ const MonthOption = styled.div`
 
 enum CalendarView {
   Day,
-  Month,
+  Month
 }
 
 type CalendarPropsType = {
@@ -155,7 +148,7 @@ const Calendar = (props: CalendarPropsType) => {
   const initialDate = {
     day: props.selectedDate.getDate(),
     month: props.selectedDate.getMonth(),
-    year: props.selectedDate.getFullYear(),
+    year: props.selectedDate.getFullYear()
   };
 
   const ref = useRef(null);
@@ -176,24 +169,15 @@ const Calendar = (props: CalendarPropsType) => {
 
   useDetectOutsideClick(ref, handleOutsideClick);
 
-  const daysInMonth = dateHelpers.getMonthDays(
-    selectedDate.month,
-    selectedDate.year
-  );
-  const firstDayOfMonth = dateHelpers.getFirstDayOfMonth(
-    selectedDate.month,
-    selectedDate.year
-  );
+  const daysInMonth = dateHelpers.getMonthDays(selectedDate.month, selectedDate.year);
+  const firstDayOfMonth = dateHelpers.getFirstDayOfMonth(selectedDate.month, selectedDate.year);
 
   const renderMonths = () => {
-    let months = [];
+    const months = [];
 
     for (let i = 0; i < 12; i++) {
       months.push(
-        <MonthOption
-          onClick={() => handleMonthClick(i)}
-          key={dateHelpers.MONTHS[i]}
-        >
+        <MonthOption onClick={() => handleMonthClick(i)} key={dateHelpers.MONTHS[i]}>
           {dateHelpers.MONTHS[i].substring(0, 3)}
         </MonthOption>
       );
@@ -209,17 +193,13 @@ const Calendar = (props: CalendarPropsType) => {
   };
 
   const renderDates = () => {
-    let dates = [];
+    const dates = [];
 
     for (let i = 0; i < daysInMonth; i++) {
       let disabled = false;
       if (props.disableDatesBefore) {
-        const currentDate = new Date(
-          `${selectedDate.month + 1}-${i + 1}-${selectedDate.year}`
-        );
-        disabled =
-          currentDate.setHours(0, 0, 0, 0) <
-          props.disableDatesBefore.setHours(0, 0, 0, 0);
+        const currentDate = new Date(`${selectedDate.month + 1}-${i + 1}-${selectedDate.year}`);
+        disabled = currentDate.setHours(0, 0, 0, 0) < props.disableDatesBefore.setHours(0, 0, 0, 0);
       }
 
       dates.push(
@@ -229,8 +209,7 @@ const Calendar = (props: CalendarPropsType) => {
           onClick={() => handleDayClick(i + 1)}
           key={i}
           disabled={disabled}
-          type="button"
-        >
+          type="button">
           {i + 1}
         </DateIndicator>
       );
@@ -245,18 +224,12 @@ const Calendar = (props: CalendarPropsType) => {
         return (
           <>
             <WeekHeaderWrapper>{renderWeekHeader()}</WeekHeaderWrapper>
-            <CalendarViewGrid view={CalendarView.Day}>
-              {renderDates()}
-            </CalendarViewGrid>
+            <CalendarViewGrid view={CalendarView.Day}>{renderDates()}</CalendarViewGrid>
           </>
         );
       }
       case CalendarView.Month:
-        return (
-          <CalendarViewGrid view={CalendarView.Month}>
-            {renderMonths()}
-          </CalendarViewGrid>
-        );
+        return <CalendarViewGrid view={CalendarView.Month}>{renderMonths()}</CalendarViewGrid>;
     }
   };
 
@@ -272,7 +245,7 @@ const Calendar = (props: CalendarPropsType) => {
   const handleDayClick = (day: number) => {
     setSelectedDate({
       ...selectedDate,
-      day,
+      day
     });
   };
 
@@ -280,7 +253,7 @@ const Calendar = (props: CalendarPropsType) => {
     setCurrentView(CalendarView.Day);
     setSelectedDate({
       ...selectedDate,
-      month,
+      month
     });
   };
 
@@ -292,7 +265,7 @@ const Calendar = (props: CalendarPropsType) => {
 
       setSelectedDate({
         ...selectedDate,
-        year: nextYear,
+        year: nextYear
       });
     }
   };
@@ -305,32 +278,30 @@ const Calendar = (props: CalendarPropsType) => {
 
       setSelectedDate({
         ...selectedDate,
-        year: nextYear,
+        year: nextYear
       });
     }
   };
 
   const handleNextMonthClick = () => {
     const nextMonth = selectedDate.month >= 11 ? 0 : selectedDate.month + 1;
-    const year =
-      selectedDate.month >= 11 ? selectedDate.year + 1 : selectedDate.year;
+    const year = selectedDate.month >= 11 ? selectedDate.year + 1 : selectedDate.year;
 
     setSelectedDate({
       ...selectedDate,
       month: nextMonth,
-      year,
+      year
     });
   };
 
   const handlePrevMonthClick = () => {
     const prevMonth = selectedDate.month <= 0 ? 11 : selectedDate.month - 1;
-    const year =
-      selectedDate.month <= 0 ? selectedDate.year - 1 : selectedDate.year;
+    const year = selectedDate.month <= 0 ? selectedDate.year - 1 : selectedDate.year;
 
     setSelectedDate({
       ...selectedDate,
       month: prevMonth,
-      year,
+      year
     });
   };
 
@@ -359,9 +330,7 @@ const Calendar = (props: CalendarPropsType) => {
           <FontAwesomeIcon icon={faCaretRight} />
         </NavigationButton>
       </CalendarHeader>
-      <CalendarViewContainer view={currentView}>
-        {renderView()}
-      </CalendarViewContainer>
+      <CalendarViewContainer view={currentView}>{renderView()}</CalendarViewContainer>
     </CalendarContainer>
   );
 };

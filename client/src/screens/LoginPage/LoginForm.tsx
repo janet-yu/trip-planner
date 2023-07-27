@@ -16,7 +16,7 @@ const LoginForm = (props: any) => {
   const handleSubmit = async (values: any) => {
     const request = {
       username: values.username,
-      password: values.password,
+      password: values.password
     };
 
     const response = await axios.post(`/users/login`, request);
@@ -24,7 +24,7 @@ const LoginForm = (props: any) => {
     if (response.data) {
       setAuth({
         accessToken: response.data.data.accessToken,
-        user: response.data.data.user,
+        user: response.data.data.user
       });
 
       // Navigate to dashboard
@@ -37,55 +37,52 @@ const LoginForm = (props: any) => {
       <Formik
         initialValues={{
           username: '',
-          password: '',
+          password: ''
         }}
         onSubmit={(values) => {
           handleSubmit(values);
-        }}
-      >
+        }}>
         {(props) => (
           <Form
             style={{
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
+              alignItems: 'center'
+            }}>
             <TextInput
-              type='text'
-              name='username'
-              placeholder='Username'
+              type="text"
+              name="username"
+              placeholder="Username"
               style={{ margin: '10px 0' }}
               onChange={props.handleChange}
             />
             <TextInput
-              type='password'
-              name='password'
-              placeholder='Password'
+              type="password"
+              name="password"
+              placeholder="Password"
               style={{
-                margin: '10px 0',
+                margin: '10px 0'
               }}
               onChange={props.handleChange}
             />
-            <Button variant='primary' type='submit' my={16}>
+            <Button variant="primary" type="submit" my={16}>
               Sign in
             </Button>
           </Form>
         )}
       </Formik>
       <CTAText>
-        Don't have an account?{' '}
-        <NavLink to='/plan-trip'>Create a trip here!</NavLink>
+        {"Don't have an account?"} <NavLink to="/plan-trip">Create a trip here!</NavLink>
       </CTAText>
       <CTAText>
-        Have a trip code?{' '}
-        <a href='#' onClick={() => props.setLoginView('code')}>
+        {'Have a trip code? '}
+        <a href="#" onClick={() => props.setLoginView('code')}>
           Enter it here!
         </a>
       </CTAText>
       <CTAText>
-        Don't have an account?
-        <a href='#' onClick={() => props.setLoginView('signup')}>
+        {"Don't have an account?"}
+        <a href="#" onClick={() => props.setLoginView('signup')}>
           Sign up here!
         </a>
       </CTAText>

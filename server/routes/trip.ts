@@ -204,8 +204,6 @@ tripRouter.get('/:id/itinerary', async (req, res) => {
         activity.referenceId
       );
 
-      console.log({ activity });
-
       itinerary.push({
         // @ts-ignore
         ...activity.toObject(),
@@ -219,6 +217,34 @@ tripRouter.get('/:id/itinerary', async (req, res) => {
       status: RESPONSE_STATUSES.success,
       data: {
         itinerary,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: RESPONSE_STATUSES.error,
+    });
+  }
+});
+
+tripRouter.post('/:tripId/itinerary', async (req, res) => {
+  try {
+    const { tripId } = req.params;
+    const { activity } = req.body;
+
+    const updated = await Trip.findByIdAndUpdate(
+      tripId,
+      {
+        $push: {
+          itinerary: activity,
+        },
+      },
+      { new: true }
+    );
+
+    res.status(201).json({
+      status: RESPONSE_STATUSES.success,
+      data: {
+        trip: await extendTripObject(updated),
       },
     });
   } catch (err) {

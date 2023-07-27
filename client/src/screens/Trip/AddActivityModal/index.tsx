@@ -26,7 +26,7 @@ const AddActivityModal = ({
   setModalClose,
   setTrip,
   selectedDate,
-  tripId,
+  tripId
 }: {
   setModalClose: any;
   tripId: string;
@@ -36,36 +36,33 @@ const AddActivityModal = ({
   const {
     setValue,
     suggestions: { status, data },
-    clearSuggestions,
+    clearSuggestions
   } = usePlacesAutocomplete();
   const initialState = {
     activity: {
       id: '',
-      value: '',
-    },
+      value: ''
+    }
   };
 
   const transformDataToDropdownItems = data?.map((item) => {
     return {
       title: item.structured_formatting.main_text,
       subtitle: item.structured_formatting.secondary_text,
-      value: item.place_id,
+      value: item.place_id
     };
   });
 
   const handleSubmitData = async (values: any) => {
     const request = {
-      op: 'add',
-      field: 'itinerary',
-      value: [
-        {
-          referenceId: values.activity.id,
-          date: selectedDate || new Date(),
-        },
-      ],
+      activity: {
+        referenceId: values.activity.id,
+        date: selectedDate
+      }
     };
-    const updated = await axios.patch(
-      `${process.env.REACT_APP_API_URL}/trips/${tripId}`,
+
+    const updated = await axios.post(
+      `${process.env.REACT_APP_API_URL}/trips/${tripId}/itinerary`,
       request
     );
 
@@ -83,8 +80,7 @@ const AddActivityModal = ({
 
             handleSubmitData(values);
             setModalClose();
-          }}
-        >
+          }}>
           {({ handleSubmit, setFieldValue, values, errors }) => (
             <form onSubmit={handleSubmit}>
               <Field>
@@ -95,7 +91,7 @@ const AddActivityModal = ({
                       fieldProps.field.onChange(e);
                       setValue(e.target.value);
                     }}
-                    inputName='activity.value'
+                    inputName="activity.value"
                     handleItemClick={(item) => {
                       setFieldValue('activity.id', item.value);
                       setFieldValue('activity.value', item.title);
@@ -106,7 +102,7 @@ const AddActivityModal = ({
                 )}
               </Field>
               <ButtonWrapper>
-                <Button variant='primary' type='submit'>
+                <Button variant="primary" type="submit">
                   Add
                 </Button>
               </ButtonWrapper>

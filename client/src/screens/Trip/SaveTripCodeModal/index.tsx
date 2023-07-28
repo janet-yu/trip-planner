@@ -60,7 +60,9 @@ const SaveTripCodeModal = ({
         <TripCodeWrapper>
           {!!code && <TripCode>{code}</TripCode>}
         </TripCodeWrapper>
-        <Button variant="primary">Copy code</Button>
+        <Button variant='primary' mTop={10}>
+          Copy code
+        </Button>
       </ModalContent>
     </Modal>
   );

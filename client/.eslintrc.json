@@ -15,6 +15,6 @@
   },
   "plugins": ["@typescript-eslint", "react"],
   "rules": {
-    "ban-ts-ignore": false
+    "ban-ts-ignore": 0
   }
 }

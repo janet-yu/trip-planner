@@ -1,11 +1,12 @@
 {
-    "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
-        "airbnb",
-        "prettier"
-    ],
-    "plugins": ["prettier"],
-    "rules": {
-    }
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "airbnb",
+    "prettier"
+  ],
+  "plugins": ["prettier"],
+  "rules": {
+    "no-underscore-dangle": "off"
+  }
 }

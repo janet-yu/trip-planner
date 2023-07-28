@@ -173,8 +173,6 @@ const Trip = () => {
     open: false,
     modalForm: 0
   });
-  const navigate = useNavigate();
-  const location = useLocation();
   const axiosPrivate = useAxiosPrivate();
 
   const handleRemoveLodging = async (lodgeId: string) => {
@@ -208,15 +206,10 @@ const Trip = () => {
   useEffect(() => {
     const fetchTrip = async () => {
       if (id) {
-        try {
-          const { data } = await axiosPrivate.get(`/trips/${id}` as string);
+        const { data } = await axiosPrivate.get(`/trips/${id}` as string);
 
-          setTrip(data.data.trip);
-          setSelectedDate(new Date(data.data.trip.startDate));
-        } catch (err) {
-          // Basically, redirect the user back to the page they were on before getting booted to login
-          navigate('/login', { state: { from: location }, replace: true });
-        }
+        setTrip(data.data.trip);
+        setSelectedDate(new Date(data.data.trip.startDate));
       }
     };
 

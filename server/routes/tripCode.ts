@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import Trip from '../models/trip';
 import randomstring from 'randomstring';
+import Trip from '../models/trip';
 import TripCode from '../models/tripCode';
 
 const tripCodeRouter = Router();
@@ -13,14 +13,14 @@ tripCodeRouter.post('/', async (req, res) => {
   while (!generatedCode) {
     const tripCode = randomstring.generate(7);
     const existingTripCode = await TripCode.findOne({
-      $or: [{ code: tripCode }, { tripId: tripId }],
+      $or: [{ code: tripCode }, { tripId }],
     });
 
     if (!existingTripCode) {
       generatedCode = true;
 
       const code = await TripCode.create({
-        tripId: tripId,
+        tripId,
         active: true,
         expiresAt: new Date(),
         code: tripCode,
@@ -30,11 +30,17 @@ tripCodeRouter.post('/', async (req, res) => {
         code,
       });
     }
+
+    if (existingTripCode) {
+      res.status(200).send({
+        code: existingTripCode,
+      });
+    }
   }
 });
 
 tripCodeRouter.get('/:code/trip', async (req, res) => {
-  const code = req.params.code;
+  const { code } = req.params;
 
   const tripCode = await TripCode.findOne({
     code,

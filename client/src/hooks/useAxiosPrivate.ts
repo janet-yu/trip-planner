@@ -2,6 +2,7 @@ import { axiosPrivate } from '../api/axios';
 import { useEffect } from 'react';
 import useRefreshToken from './useRefreshToken';
 import useAuth from './useAuth';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 /**
  * Attach interceptors to axios private instance
@@ -9,6 +10,8 @@ import useAuth from './useAuth';
 const useAxiosPrivate = () => {
   const refresh = useRefreshToken();
   const { auth } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     // Check if the request is a retry request. Basically
@@ -35,14 +38,18 @@ const useAxiosPrivate = () => {
       async (err) => {
         // Example: access token has expired
         const prevRequest = err?.config;
-        console.log({ err });
 
         if (err.response?.status === 403 && !prevRequest?.sent) {
           prevRequest.sent = true;
           // Sets access token and returns new access token
           // If the refresh token expired, this get request will fail and we'll
           // redirect to the login page.
-          const newAccessToken = await refresh();
+          let newAccessToken;
+          try {
+            newAccessToken = await refresh();
+          } catch (err) {
+            navigate('/login', { state: { from: location }, replace: true });
+          }
 
           prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
 

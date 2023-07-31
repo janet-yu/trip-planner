@@ -6,7 +6,7 @@ import { device } from '../../utils/mediaQueries';
 import useUseLoadScript from '../../hooks/useUseLoadScript';
 import Navigation from '../../components/Navigation';
 import PlaceCard from '../../components/PlaceCard';
-import { GoogleMap, Marker } from '@react-google-maps/api';
+import { GoogleMap, Marker, DirectionsRenderer } from '@react-google-maps/api';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import AddLodgingModal from './AddLodgingModal';
@@ -18,6 +18,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { faEdit, faLocationDot, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import Box from '../../components/Box';
 import EditActivityModal from './EditActivityModal';
+import Map from './Map';
 
 const Header = styled.header<{ bgUrl?: string }>`
   background: url(${(props) => props.bgUrl});
@@ -115,10 +116,6 @@ const Section = styled.div`
   padding-bottom: 32px;
 `;
 
-const MapContainer = styled.div`
-  flex: 1;
-`;
-
 const AddItemButton = styled.button`
   margin-top: 16px;
   color: ${(props) => props.theme.colors.grey['500']};
@@ -147,11 +144,6 @@ interface Trip {
   startDate: Date;
   endDate: Date;
 }
-
-const mapContainerStyle = {
-  width: '100%',
-  height: '100%'
-};
 
 const Trip = () => {
   const { id } = useParams();
@@ -517,12 +509,9 @@ const Trip = () => {
             </Section>
           </SectionsContainer>
         </TripDetailsContainer>
-        <MapContainer>
-          <GoogleMap mapContainerStyle={mapContainerStyle} center={mapCenter} zoom={zoom}>
-            <Marker position={mapCenter} />
-          </GoogleMap>
-        </MapContainer>
-
+        {itinerary?.length && lodging?.length && (
+          <Map zoom={zoom} mapCenter={mapCenter} itinerary={itinerary} lodging={lodging} />
+        )}
         {modalOpen.open && selectedDate && renderModal(modalOpen.modalForm, modalOpen.metadata)}
       </MainContentContainer>
     </div>

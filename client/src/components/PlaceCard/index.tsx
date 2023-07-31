@@ -85,6 +85,7 @@ const CardActionButtonsContainer = styled.div``;
 type PlaceCardProps = {
   title: string;
   subtitle: string;
+  subtitleLink?: string;
   description: string;
   img?: string;
   onRemove?: MouseEventHandler;
@@ -96,7 +97,17 @@ type PlaceCardProps = {
 } & SpacingProps;
 
 const PlaceCard = (props: PlaceCardProps & React.HTMLAttributes<HTMLDivElement>) => {
-  const { title, subtitle, description, img, onRemove, actionButtons, notes, ...rest } = props;
+  const {
+    title,
+    subtitle,
+    subtitleLink,
+    description,
+    img,
+    onRemove,
+    actionButtons,
+    notes,
+    ...rest
+  } = props;
 
   return (
     <Card {...rest}>
@@ -104,7 +115,15 @@ const PlaceCard = (props: PlaceCardProps & React.HTMLAttributes<HTMLDivElement>)
         <CardHeader>
           <CardHeaderText>
             <CardTitle>{title}</CardTitle>
-            <CardSubtitle>{subtitle}</CardSubtitle>
+            <CardSubtitle>
+              {subtitleLink ? (
+                <a href={subtitleLink} target="_blank" rel="noreferrer">
+                  {subtitle}
+                </a>
+              ) : (
+                subtitle
+              )}
+            </CardSubtitle>
           </CardHeaderText>
           <CardActionButtonsContainer>
             {actionButtons.map((action, idx) => {

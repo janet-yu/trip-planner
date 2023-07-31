@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import useAuth from '../../hooks/useAuth';
 import useFetchTrips from './hooks/useFetchTrips';
 import PageHeader from '../../components/PageHeader';

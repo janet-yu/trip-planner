@@ -3,7 +3,7 @@ import PlanTripForm from './Forms/PlanTripForm';
 import styled from 'styled-components';
 import PageHeader from '../../components/PageHeader';
 
-const PageContainer = styled.div`
+export const PageContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;

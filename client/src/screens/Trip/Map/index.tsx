@@ -32,13 +32,13 @@ const mapContainerStyle = {
 
 const RouteContainer = styled.div`
   background: white;
-  box-shadow: 0px 5px 5px #aaa;
   border-radius: 8px;
   margin-top: 10px;
   position: absolute;
   z-index: 1;
-  top: 48px;
-  margin-left: 12px;
+  top: 84px;
+  margin-left: 0px;
+  box-shadow: 2px 2px 5px #aaa;
 `;
 
 const RouteTab = styled.button`
@@ -46,6 +46,7 @@ const RouteTab = styled.button`
   border: none;
   padding: 10px;
   font-size: 1.2rem;
+  border-radius: 0px 8px 8px 0px;
 
   &:hover {
     font-weight: bold;
@@ -63,14 +64,11 @@ const Map = ({ mapCenter, zoom, itinerary = [], lodging = [] }: Props) => {
   const [directionsToggle, setDirectionsToggle] = useState(false);
   const [noDirectionsResult, setNoDirectionsResult] = useState(false);
 
-  console.log({ directions });
   const handleOriginSelect = (option: any) => {
-    console.log({ option });
     setOriginValue(option);
   };
 
   const handleDestinationSelect = (option: any) => {
-    console.log({ option });
     setDestinationValue(option);
   };
 
@@ -100,7 +98,6 @@ const Map = ({ mapCenter, zoom, itinerary = [], lodging = [] }: Props) => {
         travelMode: google.maps.TravelMode.DRIVING
       },
       (result, status) => {
-        console.log({ result });
         if (status === 'OK' && result) {
           setDirections(result);
           setNoDirectionsResult(false);
@@ -127,7 +124,7 @@ const Map = ({ mapCenter, zoom, itinerary = [], lodging = [] }: Props) => {
           Route
         </RouteTab>
         {directionsToggle && (
-          <RouteDetails p={12}>
+          <RouteDetails p={18}>
             <Box>
               <Select
                 options={generatePlaceOptions()}

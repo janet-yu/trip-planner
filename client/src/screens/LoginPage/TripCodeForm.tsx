@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form } from 'formik';
@@ -12,9 +12,7 @@ const TripCodeForm = (props: any) => {
   const handleSubmit = async (values: any) => {
     const { code } = values;
 
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/trip-codes/${code}/trip`
-    );
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/trip-codes/${code}/trip`);
 
     if (response.data) {
       navigate(`/trip/${response.data._id}`);
@@ -26,20 +24,18 @@ const TripCodeForm = (props: any) => {
       <LoginPrompt>Enter trip code:</LoginPrompt>
       <Formik
         initialValues={{
-          code: '',
+          code: ''
         }}
         onSubmit={(values) => {
           handleSubmit(values);
-        }}
-      >
+        }}>
         {(props) => (
           <Form
             style={{
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
+              alignItems: 'center'
+            }}>
             <TextInput
               type="text"
               name="code"

@@ -90,7 +90,7 @@ type PlaceCardProps = {
   img?: string;
   onRemove?: MouseEventHandler;
   notes?: string;
-  actionButtons: {
+  actionButtons?: {
     icon: IconDefinition;
     onClick: any;
   }[];
@@ -126,13 +126,14 @@ const PlaceCard = (props: PlaceCardProps & React.HTMLAttributes<HTMLDivElement>)
             </CardSubtitle>
           </CardHeaderText>
           <CardActionButtonsContainer>
-            {actionButtons.map((action, idx) => {
-              return (
-                <CardActionButton onClick={action.onClick} key={idx}>
-                  <FontAwesomeIcon icon={action.icon} />
-                </CardActionButton>
-              );
-            })}
+            {actionButtons &&
+              actionButtons.map((action, idx) => {
+                return (
+                  <CardActionButton onClick={action.onClick} key={idx}>
+                    <FontAwesomeIcon icon={action.icon} />
+                  </CardActionButton>
+                );
+              })}
           </CardActionButtonsContainer>
         </CardHeader>
         <CardDescriptionWrapper>

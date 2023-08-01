@@ -15,7 +15,7 @@ const TripCodeForm = (props: any) => {
     const response = await axios.get(`${process.env.REACT_APP_API_URL}/trip-codes/${code}/trip`);
 
     if (response.data) {
-      navigate(`/trip/${response.data._id}`);
+      navigate(`/trip/${response.data._id}?readonly=true`);
     }
   };
 

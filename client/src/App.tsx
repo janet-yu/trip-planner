@@ -6,7 +6,7 @@ import {
   Route,
   createBrowserRouter,
   createRoutesFromElements,
-  RouterProvider,
+  RouterProvider
 } from 'react-router-dom';
 import { AuthProvider } from './context/AuthProvider';
 import PlanTripPage from './screens/PlanTrip';
@@ -16,19 +16,22 @@ import ProtectedLayout from './components/ProtectedLayout';
 import Home from './screens/Home';
 import UpcomingTrips from './screens/UpcomingTrips';
 import PersistedLogin from './components/PersistedLogin';
+import OptionalAuthLayout from './components/OptionalAuthLayout';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<AuthProvider />}>
-      <Route path='login' element={<LoginPage />} />
+      <Route path="login" element={<LoginPage />} />
 
       {/* Protected routes */}
       <Route element={<PersistedLogin />}>
         <Route element={<ProtectedLayout />}>
-          <Route path='/' element={<Home />} />
-          <Route path='trip/:id' element={<TripPage />} />
-          <Route path='upcoming-trips' element={<UpcomingTrips />} />
-          <Route path='plan-trip' element={<PlanTripPage />} />
+          <Route path="/" element={<Home />} />
+          <Route path="upcoming-trips" element={<UpcomingTrips />} />
+          <Route path="plan-trip" element={<PlanTripPage />} />
+        </Route>
+        <Route element={<OptionalAuthLayout />}>
+          <Route path="trip/:id" element={<TripPage />} />
         </Route>
       </Route>
     </Route>

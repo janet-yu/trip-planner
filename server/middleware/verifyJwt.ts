@@ -1,6 +1,10 @@
 import jwt from 'jsonwebtoken';
 
 const verifyJwt = (req, res, next) => {
+  if (req.query?.readonly) {
+    return next();
+  }
+
   // the request header should have the jwt token
   const authHeader = req.headers.authorization;
 
@@ -8,10 +12,10 @@ const verifyJwt = (req, res, next) => {
 
   const token = authHeader.split(' ')[1];
 
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+  return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
     if (err) return res.sendStatus(403); // invalid token, forbidden
     req.user = decoded.username;
-    next();
+    return next();
   });
 };
 

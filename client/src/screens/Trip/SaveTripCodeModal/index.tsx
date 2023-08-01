@@ -27,27 +27,18 @@ const TripCode = styled.p`
   text-align: center;
 `;
 
-const SaveTripCodeModal = ({
-  setModalClose,
-  tripId,
-}: {
-  setModalClose: any;
-  tripId: string;
-}) => {
+const SaveTripCodeModal = ({ setModalClose, tripId }: { setModalClose: any; tripId: string }) => {
   const [code, setCode] = useState('');
 
   useEffect(() => {
     // Generate the trip code
     const generateTripCode = async () => {
       const request = {
-        tripId,
+        tripId
       };
-      const updated = await axios.post(
-        `${process.env.REACT_APP_API_URL}/trip-codes`,
-        request
-      );
+      const updated = await axios.post(`${process.env.REACT_APP_API_URL}/trip-codes`, request);
 
-      setCode(updated.data.code.code);
+      setCode(updated.data.code);
     };
 
     generateTripCode();
@@ -57,10 +48,8 @@ const SaveTripCodeModal = ({
     <Modal setModalClose={setModalClose}>
       <ModalContent>
         <FormTitle>Trip Code</FormTitle>
-        <TripCodeWrapper>
-          {!!code && <TripCode>{code}</TripCode>}
-        </TripCodeWrapper>
-        <Button variant='primary' mTop={10}>
+        <TripCodeWrapper>{!!code && <TripCode>{code}</TripCode>}</TripCodeWrapper>
+        <Button variant="primary" mTop={10}>
           Copy code
         </Button>
       </ModalContent>

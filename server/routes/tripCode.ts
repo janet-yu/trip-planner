@@ -8,35 +8,39 @@ const tripCodeRouter = Router();
 tripCodeRouter.post('/', async (req, res) => {
   const { tripId } = req.body;
 
-  let generatedCode = false;
+  const existingTripCode = await TripCode.findOne({
+    tripId,
+  });
 
-  while (!generatedCode) {
-    const tripCode = randomstring.generate(7);
-    const existingTripCode = await TripCode.findOne({
-      $or: [{ code: tripCode }, { tripId }],
-    });
+  if (!existingTripCode) {
+    let generated = false;
 
-    if (!existingTripCode) {
-      generatedCode = true;
-
-      const code = await TripCode.create({
-        tripId,
-        active: true,
-        expiresAt: new Date(),
-        code: tripCode,
+    while (!generated) {
+      const generatedCode = randomstring.generate(7);
+      const existingTripCode = await TripCode.findOne({
+        $or: [{ code: generatedCode }, { tripId }],
       });
 
-      res.status(200).send({
-        code,
-      });
-    }
+      if (!existingTripCode) {
+        generated = true;
 
-    if (existingTripCode) {
-      res.status(200).send({
-        code: existingTripCode,
-      });
+        const tripCode = await TripCode.create({
+          tripId,
+          active: true,
+          expiresAt: new Date(),
+          code: generatedCode,
+        });
+
+        res.status(200).send({
+          code: tripCode.code,
+        });
+      }
     }
   }
+
+  res.status(200).send({
+    code: existingTripCode.code,
+  });
 });
 
 tripCodeRouter.get('/:code/trip', async (req, res) => {

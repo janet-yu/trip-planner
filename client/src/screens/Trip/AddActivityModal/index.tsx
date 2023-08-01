@@ -5,7 +5,7 @@ import Modal from '../../../components/Modal';
 import Searchbar from '../../../components/Searchbar';
 import { Field, Formik } from 'formik';
 import Button from '../../../components/Button';
-import axios from 'axios';
+import { axiosPrivate } from '../../../api/axios';
 
 const ModalContent = styled.div``;
 
@@ -61,7 +61,7 @@ const AddActivityModal = ({
       }
     };
 
-    const updated = await axios.post(
+    const updated = await axiosPrivate.post(
       `${process.env.REACT_APP_API_URL}/trips/${tripId}/itinerary`,
       request
     );

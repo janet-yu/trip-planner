@@ -173,7 +173,10 @@ const Trip = ({ tripId }: { tripId: string }) => {
       }
     };
 
-    const updated = await axios.patch(`${process.env.REACT_APP_API_URL}/trips/${tripId}`, request);
+    const updated = await axiosPrivate.patch(
+      `${process.env.REACT_APP_API_URL}/trips/${tripId}`,
+      request
+    );
 
     setTrip(updated.data.data.trip);
   };
@@ -187,7 +190,10 @@ const Trip = ({ tripId }: { tripId: string }) => {
       }
     };
 
-    const updated = await axios.patch(`${process.env.REACT_APP_API_URL}/trips/${tripId}`, request);
+    const updated = await axiosPrivate.patch(
+      `${process.env.REACT_APP_API_URL}/trips/${tripId}`,
+      request
+    );
 
     setTrip(updated.data.data.trip);
   };

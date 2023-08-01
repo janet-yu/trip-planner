@@ -81,7 +81,7 @@ tripRouter.get('/:id', verifyJwt, async (req, res) => {
   }
 });
 
-tripRouter.patch('/:id', async (req, res) => {
+tripRouter.patch('/:id', verifyJwt, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -226,7 +226,7 @@ tripRouter.get('/:id/itinerary', async (req, res) => {
   }
 });
 
-tripRouter.post('/:tripId/itinerary', async (req, res) => {
+tripRouter.post('/:tripId/itinerary', verifyJwt, async (req, res) => {
   try {
     const { tripId } = req.params;
     const { activity } = req.body;
@@ -256,6 +256,7 @@ tripRouter.post('/:tripId/itinerary', async (req, res) => {
 
 tripRouter.patch(
   '/:tripId/itinerary/activity/:activityId',
+  verifyJwt,
   async (req, res) => {
     try {
       const { tripId, activityId } = req.params;

@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import usePlacesAutocomplete from 'use-places-autocomplete';
 import Modal from '../../../components/Modal';
@@ -6,7 +6,7 @@ import Searchbar from '../../../components/Searchbar';
 import { Field, Formik } from 'formik';
 import Button from '../../../components/Button';
 import DatePicker from '../../../components/DatePicker';
-import axios from 'axios';
+import { axiosPrivate } from '../../../api/axios';
 
 const ModalContent = styled.div``;
 
@@ -25,7 +25,7 @@ const FormTitle = styled.h3`
 const AddLodgingModal = ({
   setModalClose,
   setTrip,
-  tripId,
+  tripId
 }: {
   setModalClose: any;
   tripId: string;
@@ -34,22 +34,22 @@ const AddLodgingModal = ({
   const {
     setValue,
     suggestions: { status, data },
-    clearSuggestions,
+    clearSuggestions
   } = usePlacesAutocomplete();
   const initialState = {
     lodging: {
       id: '',
-      value: '',
+      value: ''
     },
     checkinDate: null,
-    checkoutDate: null,
+    checkoutDate: null
   };
 
   const transformDataToDropdownItems = data?.map((item) => {
     return {
       title: item.structured_formatting.main_text,
       subtitle: item.structured_formatting.secondary_text,
-      value: item.place_id,
+      value: item.place_id
     };
   });
 
@@ -61,11 +61,11 @@ const AddLodgingModal = ({
         {
           referenceId: values.lodging.id,
           checkinDate: values.checkinDate,
-          checkoutDate: values.checkoutDate,
-        },
-      ],
+          checkoutDate: values.checkoutDate
+        }
+      ]
     };
-    const updated = await axios.patch(
+    const updated = await axiosPrivate.patch(
       `${process.env.REACT_APP_API_URL}/trips/${tripId}`,
       request
     );
@@ -82,8 +82,7 @@ const AddLodgingModal = ({
           onSubmit={(values) => {
             handleSubmitData(values);
             setModalClose();
-          }}
-        >
+          }}>
           {({ handleSubmit, setFieldValue, values, errors }) => (
             <form onSubmit={handleSubmit}>
               <Field>
@@ -116,7 +115,7 @@ const AddLodgingModal = ({
                   onChange={setFieldValue}
                   label="Check-out"
                   styles={{
-                    marginLeft: '10px',
+                    marginLeft: '10px'
                   }}
                   variant="secondary"
                   disableDatesBefore={values.checkinDate}

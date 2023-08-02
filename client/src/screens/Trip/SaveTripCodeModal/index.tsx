@@ -5,7 +5,7 @@ import Button from '../../../components/Button';
 import axios from 'axios';
 
 const ModalContent = styled.div`
-  min-width: 368px;
+  width: 100%;
 `;
 
 const FormTitle = styled.h3`
@@ -25,6 +25,11 @@ const TripCode = styled.p`
   font-weight: bold;
   color: ${(props) => props.theme.colors.primary['800']};
   text-align: center;
+`;
+
+const SaveButton = styled(Button)`
+  display: block;
+  margin: 10px auto;
 `;
 
 const SaveTripCodeModal = ({ setModalClose, tripId }: { setModalClose: any; tripId: string }) => {
@@ -49,9 +54,9 @@ const SaveTripCodeModal = ({ setModalClose, tripId }: { setModalClose: any; trip
       <ModalContent>
         <FormTitle>Trip Code</FormTitle>
         <TripCodeWrapper>{!!code && <TripCode>{code}</TripCode>}</TripCodeWrapper>
-        <Button variant="primary" mTop={10}>
+        <SaveButton variant="primary" mTop={10}>
           Copy code
-        </Button>
+        </SaveButton>
       </ModalContent>
     </Modal>
   );

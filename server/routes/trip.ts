@@ -306,4 +306,41 @@ tripRouter.patch(
   }
 );
 
+/*
+  PEOPLE ROUTES
+*/
+tripRouter.post('/:id/people', verifyJwt, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body;
+
+    const person = {
+      userId: new Types.ObjectId(userId),
+    };
+
+    const updatedTrip = await Trip.findByIdAndUpdate(
+      id,
+      {
+        $push: {
+          people: person,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.status(200).json({
+      status: RESPONSE_STATUSES.success,
+      data: {
+        trip: await extendTripObject(updatedTrip),
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: RESPONSE_STATUSES.error,
+    });
+  }
+});
+
 export default tripRouter;

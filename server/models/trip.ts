@@ -1,4 +1,4 @@
-import { model, Schema } from 'mongoose';
+import { model, Schema, Types } from 'mongoose';
 
 const tripSchema = new Schema(
   {
@@ -20,7 +20,11 @@ const tripSchema = new Schema(
         notes: String,
       },
     ],
-    people: Array,
+    people: [
+      {
+        userId: Types.ObjectId,
+      },
+    ],
     userId: String,
   },
   { timestamps: true }

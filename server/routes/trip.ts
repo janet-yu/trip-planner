@@ -4,6 +4,7 @@ import Trip from '../models/trip';
 import GoogleAPIService from '../lib/googleAPI';
 import { PATCH_OPERATIONS, RESPONSE_STATUSES } from './utils/types';
 import verifyJwt from '../middleware/verifyJwt';
+import User from '../models/user';
 
 const tripRouter = Router();
 
@@ -12,8 +13,17 @@ export const extendTripObject = async (trip) => {
     trip.placeReferenceId
   );
 
+  const people = await Promise.all(
+    trip.people.map(async (person) => {
+      const foundPerson = await User.findById(person.userId);
+
+      return foundPerson;
+    })
+  );
+
   return {
     ...trip.toObject(),
+    people,
     photos: tripDetails.photos,
     geometry: tripDetails.geometry,
   };
@@ -309,13 +319,35 @@ tripRouter.patch(
 /*
   PEOPLE ROUTES
 */
-tripRouter.post('/:id/people', verifyJwt, async (req, res) => {
+tripRouter.post('/:id/people', async (req, res) => {
   try {
     const { id } = req.params;
-    const { userId } = req.body;
+    const { username } = req.body;
+
+    const user = await User.findOne({
+      username,
+    });
+
+    if (!user) {
+      res.status(400).json({
+        status: RESPONSE_STATUSES.fail,
+        message: 'User does not exist',
+      });
+    }
+
+    const trip = await Trip.findById(id);
+
+    if (
+      trip.people.some((el) => el.userId.toString() === user._id.toString())
+    ) {
+      return res.status(400).json({
+        status: RESPONSE_STATUSES.fail,
+        message: 'User already added to trip',
+      });
+    }
 
     const person = {
-      userId: new Types.ObjectId(userId),
+      userId: user._id,
     };
 
     const updatedTrip = await Trip.findByIdAndUpdate(

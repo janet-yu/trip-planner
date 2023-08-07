@@ -6,7 +6,7 @@ const StyledInput = styled.input`
   border: 1px solid ${(props) => props.theme.colors.grey['400']};
   background: none;
   padding: 1em;
-  width: 200px;
+  width: 100%;
 `;
 
 const TextInput = (props: any) => {

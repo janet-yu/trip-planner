@@ -17,6 +17,7 @@ import { faEdit, faLocationDot, faTrashAlt } from '@fortawesome/free-solid-svg-i
 import Box from '../../components/Box';
 import EditActivityModal from './EditActivityModal';
 import Map from './Map';
+import AddPersonModal from './AddPersonModal';
 
 const Header = styled.header<{ bgUrl?: string }>`
   background: url(${(props) => props.bgUrl});
@@ -51,30 +52,34 @@ const TripHeadingContainer = styled.div`
 `;
 
 const TripHeading = styled.h1`
-  font-size: 4rem;
+  font-size: 3rem;
   margin: 24px 0;
   text-transform: uppercase;
   letter-spacing: 4px;
   text-align: center;
   position: relative;
 
-  &::after,
-  &::before {
-    height: 5px;
-    content: '';
-    display: block;
-    background: #fff;
-    width: 100%;
-    position: absolute;
-    top: 50%;
-  }
+  @media ${device.tablet} {
+    font-size: 4rem;
+    &::after,
+    &::before {
+      height: 5px;
+      content: '';
+      display: block;
+      background: #fff;
+      width: 20vw;
+      max-width: 250px;
+      position: absolute;
+      top: 50%;
+    }
 
-  &::after {
-    left: 110%;
-  }
+    &::after {
+      left: 110%;
+    }
 
-  &::before {
-    right: 110%;
+    &::before {
+      right: 110%;
+    }
   }
 `;
 
@@ -131,7 +136,8 @@ enum ModalForm {
   ADD_LODGING,
   ADD_ACTIVITY,
   SAVE_TRIP,
-  EDIT_ACTIVITY
+  EDIT_ACTIVITY,
+  ADD_PERSON
 }
 
 interface Trip {
@@ -139,6 +145,7 @@ interface Trip {
   lodging: any[];
   title: string;
   placeReferenceId: string;
+  people: any[];
   startDate: Date;
   endDate: Date;
 }
@@ -295,6 +302,10 @@ const Trip = ({ tripId }: { tripId: string }) => {
             tripId={trip._id}
             activity={(metadata as { activity: any }).activity}
           />
+        );
+      case ModalForm.ADD_PERSON:
+        return (
+          <AddPersonModal setTrip={setTrip} setModalClose={handleModalClose} tripId={trip._id} />
         );
     }
   };
@@ -484,6 +495,18 @@ const Trip = ({ tripId }: { tripId: string }) => {
 
                   if (destIndex !== undefined) {
                     const newItinerary = itinerary.slice(0);
+                    /**
+                     * Filter based on nodes itinerary = [{_id, data, next, prev}...]
+                     * itinerary = trip.itinerary.filter(node => node.data.date === selectedDate)
+                     *
+                     * itinerary.map(node => node.data.name etc)
+                     *
+                     * handleItineraryChange(destIndex, sourceIndex)
+                     *  grab the node IDs at dest index and sourceIndex
+                     *  const node1 = itinerary[destIndex]._id
+                     *  const node2 = itinerary[sourceIndex]._id
+                     *
+                     */
                     newItinerary.splice(destIndex, 0, newItinerary.splice(sourceIndex, 1)[0]);
                     setItinerary(newItinerary);
                     handleItineraryChange(newItinerary);
@@ -510,7 +533,23 @@ const Trip = ({ tripId }: { tripId: string }) => {
             </Section>
             <Section>
               <SectionTitle>People</SectionTitle>
-              <AddItemButton>+ Add Person</AddItemButton>
+              <Box>
+                {trip.people.map((person) => (
+                  <p
+                    key={
+                      person._id
+                    }>{`${person.firstName} ${person.lastName} (${person.username})`}</p>
+                ))}
+              </Box>
+              <AddItemButton
+                onClick={() => {
+                  setModalOpen({
+                    open: true,
+                    modalForm: ModalForm.ADD_PERSON
+                  });
+                }}>
+                + Add Person
+              </AddItemButton>
             </Section>
           </SectionsContainer>
         </TripDetailsContainer>

@@ -189,17 +189,8 @@ const Trip = ({ tripId }: { tripId: string }) => {
   };
 
   const handleRemoveItineraryActivity = async (activityId: string) => {
-    const request = {
-      op: 'remove',
-      field: 'itinerary',
-      value: {
-        id: activityId
-      }
-    };
-
-    const updated = await axiosPrivate.patch(
-      `${process.env.REACT_APP_API_URL}/trips/${tripId}`,
-      request
+    const updated = await axiosPrivate.delete(
+      `${process.env.REACT_APP_API_URL}/trips/${tripId}/itinerary/activity/${activityId}`
     );
 
     setTrip(updated.data.data.trip);
@@ -236,29 +227,24 @@ const Trip = ({ tripId }: { tripId: string }) => {
 
     const getItinerary = async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/trips/${tripId}/itinerary`
+        `${process.env.REACT_APP_API_URL}/trips/${tripId}/itinerary${
+          selectedDate ? `?date=${selectedDate}` : ''
+        }`
       );
-
       setItinerary(response.data.data.itinerary);
     };
 
     getLodging();
     getItinerary();
-  }, [trip]);
+  }, [trip, selectedDate]);
 
-  const handleItineraryChange = async (newItinerary: any) => {
-    const mappedItinerary = newItinerary.map((activity: any) => ({
-      referenceId: activity.details.place_id,
-      date: new Date()
-    }));
-
+  const handleItineraryChange = async (activity1Id: string, activity2Id: string) => {
     const request = {
-      op: 'replace',
-      field: 'itinerary',
-      value: mappedItinerary
+      activity1Id,
+      activity2Id
     };
 
-    await axios.patch(`${process.env.REACT_APP_API_URL}/trips/${tripId}`, request);
+    await axiosPrivate.patch(`${process.env.REACT_APP_API_URL}/trips/${tripId}/itinerary`, request);
   };
 
   if (loadError) {
@@ -377,10 +363,9 @@ const Trip = ({ tripId }: { tripId: string }) => {
   const renderItinerary = () => {
     return itinerary
       .filter((activity: any) => {
-        return moment(activity.date).isSame(moment(selectedDate), 'day');
+        return moment(activity.data.date).isSame(moment(selectedDate), 'day');
       })
       .map((activity: any, idx: any) => {
-        console.log({ activity });
         return (
           <Draggable draggableId={`draggable-${idx}`} index={idx} key={idx}>
             {(provided) => (
@@ -396,7 +381,7 @@ const Trip = ({ tripId }: { tripId: string }) => {
                   subtitleLink={activity.details.url}
                   description={activity.details.editorial_summary?.overview}
                   mBottom={16}
-                  notes={activity.notes}
+                  notes={activity.data.notes}
                   actionButtons={[
                     {
                       onClick: () => handleRemoveItineraryActivity(activity._id),
@@ -495,21 +480,13 @@ const Trip = ({ tripId }: { tripId: string }) => {
 
                   if (destIndex !== undefined) {
                     const newItinerary = itinerary.slice(0);
-                    /**
-                     * Filter based on nodes itinerary = [{_id, data, next, prev}...]
-                     * itinerary = trip.itinerary.filter(node => node.data.date === selectedDate)
-                     *
-                     * itinerary.map(node => node.data.name etc)
-                     *
-                     * handleItineraryChange(destIndex, sourceIndex)
-                     *  grab the node IDs at dest index and sourceIndex
-                     *  const node1 = itinerary[destIndex]._id
-                     *  const node2 = itinerary[sourceIndex]._id
-                     *
-                     */
                     newItinerary.splice(destIndex, 0, newItinerary.splice(sourceIndex, 1)[0]);
                     setItinerary(newItinerary);
-                    handleItineraryChange(newItinerary);
+
+                    const activity1Id = itinerary[sourceIndex]._id;
+                    const activity2Id = itinerary[destIndex]._id;
+                    // Swap the itinerary nodes
+                    handleItineraryChange(activity1Id, activity2Id);
                   }
                 }}>
                 <Droppable droppableId="droppable-1">

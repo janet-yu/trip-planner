@@ -5,6 +5,7 @@ import GoogleAPIService from '../lib/googleAPI';
 import { PATCH_OPERATIONS, RESPONSE_STATUSES } from './utils/types';
 import verifyJwt from '../middleware/verifyJwt';
 import User from '../models/user';
+import ItineraryLinkedList from '../classes/IitineraryLinkedList';
 
 const tripRouter = Router();
 
@@ -196,6 +197,7 @@ tripRouter.get('/:id/lodging', async (req, res) => {
  */
 tripRouter.get('/:id/itinerary', async (req, res) => {
   const { id } = req.params;
+  const { date }: { date?: string } = req.query;
 
   try {
     const trip = await Trip.findById(id);
@@ -207,11 +209,37 @@ tripRouter.get('/:id/itinerary', async (req, res) => {
       });
     }
 
+    let filteredItinerary = trip.itinerary;
+
+    if (date) {
+      // Find the head of the linked list for the specific date
+      const LinkedList = new ItineraryLinkedList();
+      await LinkedList.init(id);
+      const headOfItinerary = await LinkedList.getHead(new Date(date));
+
+      const activities = [];
+
+      if (headOfItinerary) {
+        activities.push(headOfItinerary);
+        // Aggregate all activities on the specific date into an array
+        let currNodeId = headOfItinerary.next;
+        while (currNodeId) {
+          const activityNode = LinkedList.get(currNodeId);
+
+          activities.push(activityNode);
+
+          currNodeId = activityNode.next;
+        }
+
+        filteredItinerary = activities;
+      }
+    }
+
     const itinerary = [];
 
-    for (const activity of trip.itinerary) {
+    for (const activity of filteredItinerary) {
       const response = await GoogleAPIService.getPlaceDetails(
-        activity.referenceId
+        activity.data.referenceId
       );
 
       itinerary.push({
@@ -232,6 +260,7 @@ tripRouter.get('/:id/itinerary', async (req, res) => {
   } catch (err) {
     res.status(500).json({
       status: RESPONSE_STATUSES.error,
+      message: err.message,
     });
   }
 });
@@ -241,15 +270,10 @@ tripRouter.post('/:tripId/itinerary', verifyJwt, async (req, res) => {
     const { tripId } = req.params;
     const { activity } = req.body;
 
-    const updatedTrip = await Trip.findByIdAndUpdate(
-      tripId,
-      {
-        $push: {
-          itinerary: activity,
-        },
-      },
-      { new: true }
-    );
+    const linkedList = new ItineraryLinkedList();
+    await linkedList.init(tripId);
+
+    const updatedTrip = await linkedList.add(activity);
 
     res.status(201).json({
       status: RESPONSE_STATUSES.success,
@@ -263,6 +287,58 @@ tripRouter.post('/:tripId/itinerary', verifyJwt, async (req, res) => {
     });
   }
 });
+
+tripRouter.patch('/:tripId/itinerary', verifyJwt, async (req, res) => {
+  try {
+    // Swapping the order of activities
+    const { tripId } = req.params;
+    const { activity1Id, activity2Id } = req.body;
+
+    const LinkedList = new ItineraryLinkedList();
+    await LinkedList.init(tripId);
+
+    const updatedTrip = await LinkedList.swap(activity1Id, activity2Id);
+
+    res.status(200).json({
+      status: RESPONSE_STATUSES.success,
+      data: {
+        trip: await extendTripObject(updatedTrip),
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: RESPONSE_STATUSES.fail,
+      message: err.message,
+    });
+  }
+});
+
+tripRouter.delete(
+  '/:tripId/itinerary/activity/:activityId',
+  verifyJwt,
+  async (req, res) => {
+    try {
+      const { tripId, activityId } = req.params;
+
+      const LinkedList = new ItineraryLinkedList();
+      await LinkedList.init(tripId);
+
+      const updatedTrip = await LinkedList.delete(activityId);
+
+      res.status(200).json({
+        status: RESPONSE_STATUSES.success,
+        data: {
+          trip: await extendTripObject(updatedTrip),
+        },
+      });
+    } catch (err) {
+      res.status(500).json({
+        status: RESPONSE_STATUSES.fail,
+        message: err.message,
+      });
+    }
+  }
+);
 
 tripRouter.patch(
   '/:tripId/itinerary/activity/:activityId',
@@ -362,14 +438,14 @@ tripRouter.post('/:id/people', async (req, res) => {
       }
     );
 
-    res.status(200).json({
+    return res.status(200).json({
       status: RESPONSE_STATUSES.success,
       data: {
         trip: await extendTripObject(updatedTrip),
       },
     });
   } catch (err) {
-    res.status(500).json({
+    return res.status(500).json({
       status: RESPONSE_STATUSES.error,
     });
   }

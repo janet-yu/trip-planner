@@ -15,9 +15,19 @@ const tripSchema = new Schema(
     endDate: Date,
     itinerary: [
       {
-        referenceId: String,
-        date: Date,
-        notes: String,
+        next: {
+          type: Types.ObjectId,
+          default: null,
+        },
+        prev: {
+          type: Types.ObjectId,
+          default: null,
+        },
+        data: {
+          referenceId: String,
+          date: Date,
+          notes: String,
+        },
       },
     ],
     people: [

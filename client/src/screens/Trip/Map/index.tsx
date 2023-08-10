@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { DirectionsRenderer, GoogleMap, Marker } from '@react-google-maps/api';
 import Box from '../../../components/Box';
 import { device } from '../../../utils/mediaQueries';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCar, faPersonWalking } from '@fortawesome/free-solid-svg-icons';
 
 type Props = {
   mapCenter: {
@@ -60,6 +62,7 @@ const RouteDetails = styled(Box)`
 const Map = ({ mapCenter, zoom, itinerary = [], lodging = [] }: Props) => {
   const [originValue, setOriginValue] = useState('');
   const [destinationValue, setDestinationValue] = useState('');
+  const [transportationMode, setTransportationMode] = useState('');
   const [directions, setDirections] = useState<any>(null);
   const [directionsToggle, setDirectionsToggle] = useState(false);
   const [noDirectionsResult, setNoDirectionsResult] = useState(false);
@@ -72,6 +75,9 @@ const Map = ({ mapCenter, zoom, itinerary = [], lodging = [] }: Props) => {
     setDestinationValue(option);
   };
 
+  const handleOnTransportationModeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTransportationMode(event.target.value);
+  };
   const generatePlaceOptions = () => {
     const options = [...itinerary, ...lodging].map((place) => {
       return {
@@ -95,7 +101,7 @@ const Map = ({ mapCenter, zoom, itinerary = [], lodging = [] }: Props) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         destination: destinationValue.value.details.geometry.location,
-        travelMode: google.maps.TravelMode.DRIVING
+        travelMode: transportationMode as google.maps.TravelMode
       },
       (result, status) => {
         if (status === 'OK' && result) {
@@ -112,7 +118,7 @@ const Map = ({ mapCenter, zoom, itinerary = [], lodging = [] }: Props) => {
 
   useEffect(() => {
     fetchDirections();
-  }, [originValue, destinationValue]);
+  }, [originValue, destinationValue, transportationMode]);
 
   return (
     <MapContainer>
@@ -124,7 +130,7 @@ const Map = ({ mapCenter, zoom, itinerary = [], lodging = [] }: Props) => {
           Route
         </RouteTab>
         {directionsToggle && (
-          <RouteDetails p={18}>
+          <RouteDetails p={12}>
             <Box>
               <Select
                 options={generatePlaceOptions()}
@@ -138,6 +144,32 @@ const Map = ({ mapCenter, zoom, itinerary = [], lodging = [] }: Props) => {
                 onChange={handleDestinationSelect}
                 placeholder="Destination"
               />
+            </Box>
+            <Box mTop={12}>
+              <fieldset>
+                <label htmlFor="driving" className="sr-only">
+                  Driving
+                </label>
+                <input
+                  id="driving"
+                  type="radio"
+                  name="transportation_mode"
+                  value={google.maps.TravelMode.DRIVING}
+                  onChange={handleOnTransportationModeChange}
+                />
+                <FontAwesomeIcon icon={faCar} />
+                <label htmlFor="walking" className="sr-only">
+                  Walking
+                </label>
+                <input
+                  id="walking"
+                  type="radio"
+                  name="transportation_mode"
+                  value={google.maps.TravelMode.WALKING}
+                  onChange={handleOnTransportationModeChange}
+                />
+                <FontAwesomeIcon icon={faPersonWalking} />
+              </fieldset>
             </Box>
             {directions && !noDirectionsResult && (
               <Box mTop={12}>

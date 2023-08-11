@@ -158,15 +158,16 @@ const ReadOnlyTrip = ({ tripId }: { tripId: string }) => {
 
     const getItinerary = async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/trips/${tripId}/itinerary`
+        `${process.env.REACT_APP_API_URL}/trips/${tripId}/itinerary${
+          selectedDate ? `?date=${selectedDate}` : ''
+        }`
       );
-
       setItinerary(response.data.data.itinerary);
     };
 
     getLodging();
     getItinerary();
-  }, [trip]);
+  }, [trip, selectedDate]);
 
   if (loadError) {
     return <p>ERROR</p>;
@@ -227,7 +228,7 @@ const ReadOnlyTrip = ({ tripId }: { tripId: string }) => {
   const renderItinerary = () => {
     return itinerary
       .filter((activity: any) => {
-        return moment(activity.date).isSame(moment(selectedDate), 'day');
+        return moment(activity.data.date).isSame(moment(selectedDate), 'day');
       })
       .map((activity: any, idx: any) => {
         return (

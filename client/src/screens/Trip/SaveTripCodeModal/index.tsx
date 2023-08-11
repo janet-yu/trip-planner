@@ -54,7 +54,7 @@ const SaveTripCodeModal = ({ setModalClose, tripId }: { setModalClose: any; trip
       <ModalContent>
         <FormTitle>Trip Code</FormTitle>
         <TripCodeWrapper>{!!code && <TripCode>{code}</TripCode>}</TripCodeWrapper>
-        <SaveButton variant="primary" mTop={10}>
+        <SaveButton variant="primary" mTop={10} onClick={() => navigator.clipboard.writeText(code)}>
           Copy code
         </SaveButton>
       </ModalContent>

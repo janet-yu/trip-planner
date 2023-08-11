@@ -3,10 +3,10 @@ import React from 'react';
 import Button from '../../../components/Button';
 import Modal from '../../../components/Modal';
 import styled from 'styled-components';
-import axios from 'axios';
 import TextInput from '../../../components/TextInput';
 import Box from '../../../components/Box';
 import DatePicker from '../../../components/DatePicker';
+import { axiosPrivate } from '../../../api/axios';
 
 const FormTitle = styled.h3`
   font-size: 1.5rem;
@@ -28,7 +28,7 @@ const EditActivityModal = ({
 }) => {
   const initialState = {
     date: undefined,
-    notes: activity.notes || ''
+    notes: activity.data.notes || ''
   };
 
   const handleSubmitData = async (values: { date?: Date; notes?: string }) => {
@@ -38,7 +38,7 @@ const EditActivityModal = ({
       }
     };
 
-    const updated = await axios.patch(
+    const updated = await axiosPrivate.patch(
       `${process.env.REACT_APP_API_URL}/trips/${tripId}/itinerary/activity/${activity._id}`,
       request
     );
@@ -68,7 +68,7 @@ const EditActivityModal = ({
                 />
                 <Box mTop={12}>
                   <DatePicker
-                    selectedDate={new Date(activity.date)}
+                    selectedDate={new Date(activity.data.date)}
                     label="Date"
                     variant="secondary"
                     name="date"

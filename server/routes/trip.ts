@@ -359,8 +359,11 @@ tripRouter.patch(
 
       updatedActivity = {
         ...updatedActivity,
-        ...updates,
-        ...(Boolean(updates.date) && { date: new Date(updates.date) }),
+        data: {
+          ...updatedActivity.data,
+          ...updates,
+          ...(Boolean(updates.date) && { date: new Date(updates.date) }),
+        },
       };
 
       const updatedTrip = await Trip.findOneAndUpdate(

@@ -127,7 +127,7 @@ class ItineraryLinkedList {
    */
   async swap(node1Id, node2Id) {
     if (node1Id.toString() === node2Id.toString()) {
-      return;
+      return this.trip;
     }
 
     // Update docs in trip
@@ -180,7 +180,7 @@ class ItineraryLinkedList {
       itineraryNode2.next = itineraryNode1NextId;
     }
 
-    await this.trip.save();
+    return this.trip.save();
   }
 
   async delete(nodeId: string | Types.ObjectId) {

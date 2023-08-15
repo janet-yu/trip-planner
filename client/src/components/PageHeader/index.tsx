@@ -4,6 +4,8 @@ import Navigation from '../Navigation';
 
 const Header = styled.header`
   text-align: center;
+  padding: 5rem 2rem 2rem;
+  margin-bottom: 2rem;
 `;
 
 const Title = styled.h1`

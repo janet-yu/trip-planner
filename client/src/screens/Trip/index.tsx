@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
 import Select from 'react-select';
 import moment from 'moment';
 import styled from 'styled-components';
@@ -18,7 +19,7 @@ import Box from '../../components/Box';
 import EditActivityModal from './EditActivityModal';
 import Map from './Map';
 import AddPersonModal from './AddPersonModal';
-import { useParams, useSearchParams } from 'react-router-dom';
+import Spinner from '../../components/Spinner';
 
 // Helper method for rendering components based on the readonly flag
 const renderAuthorizedComponents = (readonly: boolean, component: React.ReactNode) => {
@@ -140,6 +141,13 @@ const AddItemButton = styled.button`
     cursor: pointer;
     color: ${(props) => props.theme.colors.primary['400']};
   }
+`;
+
+const SpinnerWrapper = styled.div`
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 enum ModalForm {
@@ -280,7 +288,11 @@ const Trip = () => {
   }
 
   if (!isLoaded || !trip) {
-    return <p>LOADING</p>;
+    return (
+      <SpinnerWrapper>
+        <Spinner size={48} />;
+      </SpinnerWrapper>
+    );
   }
 
   const renderModal = (modalForm: ModalForm, metadata?: any) => {

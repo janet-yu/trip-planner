@@ -49,7 +49,8 @@ tripRouter.post('/', verifyJwt, async (req, res) => {
       endDate,
       activities,
       // add photos and location
-      userId,
+      userId: new Types.ObjectId(userId),
+      people: [...people, new Types.ObjectId(userId)],
     });
 
     res.status(201).json({
@@ -298,6 +299,8 @@ tripRouter.patch('/:tripId/itinerary', verifyJwt, async (req, res) => {
     await LinkedList.init(tripId);
 
     const updatedTrip = await LinkedList.swap(activity1Id, activity2Id);
+
+    console.log({ updatedTrip });
 
     res.status(200).json({
       status: RESPONSE_STATUSES.success,

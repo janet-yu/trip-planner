@@ -110,6 +110,15 @@ userRouter.post('/login', async (req, res) => {
   }
 });
 
+userRouter.post('/logout', async (req, res) => {
+  // Clear the cookie so that the client cannot request
+  // refreshing the access token
+  res.clearCookie('jwt');
+  res.status(200).json({
+    status: RESPONSE_STATUSES.success,
+  });
+});
+
 userRouter.get('/:id/trips', async (req, res) => {
   const userId = req.params.id;
   const trips = await Trip.find({

@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { theme } from '../../Theme';
+import useAuth from '../../hooks/useAuth';
+import axios from '../../api/axios';
 
 const Nav = styled.nav`
   text-align: center;
@@ -19,23 +21,36 @@ const NavListItem = styled.li`
   margin: 0 1rem;
 `;
 
-const links = [
-  {
-    path: '/upcoming-trips',
-    title: 'Upcoming Trips',
-  },
-  {
-    path: '/plan-trip',
-    title: 'Plan a Trip',
-  },
-];
-
 type NavigationProps = {
   variant?: 'primary' | 'secondary';
 };
 
 const Navigation = (props: NavigationProps) => {
   const variant = props.variant ? props.variant : 'primary';
+  const { setAuth } = useAuth();
+
+  const links = [
+    {
+      path: '/upcoming-trips',
+      title: 'Upcoming Trips'
+    },
+    {
+      path: '/plan-trip',
+      title: 'Plan a Trip'
+    },
+    {
+      path: '/login',
+      title: 'Logout',
+      onClick: async () => {
+        setAuth({
+          accessToken: '',
+          user: null
+        });
+
+        await axios.post('/users/logout');
+      }
+    }
+  ];
 
   const getVariantTextColor = (isActive: boolean) => {
     switch (variant) {
@@ -59,14 +74,14 @@ const Navigation = (props: NavigationProps) => {
           <NavListItem key={link.path}>
             <NavLink
               to={link.path}
+              onClick={link.onClick}
               style={({ isActive }) => {
                 return {
                   color: getVariantTextColor(isActive),
                   fontWeight: isActive ? 'bold' : 'normal',
-                  textDecoration: isActive ? 'underline' : 'none',
+                  textDecoration: isActive ? 'underline' : 'none'
                 };
-              }}
-            >
+              }}>
               {link.title}
             </NavLink>
           </NavListItem>

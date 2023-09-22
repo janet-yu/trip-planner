@@ -35,7 +35,8 @@ const tripSchema = new Schema(
         userId: Types.ObjectId,
       },
     ],
-    userId: String,
+    // MUST BE AN OBJECT ID, otherwise if you attempt to query by Object Id and this type is a string, mongoose won't query correctly
+    userId: Types.ObjectId,
   },
   { timestamps: true }
 ); // timestamps automatically generates timestamps for us

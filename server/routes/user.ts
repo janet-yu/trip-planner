@@ -5,6 +5,7 @@ import User from '../models/user';
 import Trip from '../models/trip';
 import { RESPONSE_STATUSES } from './utils/types';
 import { extendTripObject } from './trip';
+import { Types } from 'mongoose';
 
 const userRouter = Router();
 
@@ -30,7 +31,6 @@ userRouter.post('/signup', async (req, res) => {
       },
     });
   } catch (err) {
-    console.log({ err });
     res.status(500).json({
       status: RESPONSE_STATUSES.error,
       message: 'Failed to create user.',
@@ -105,7 +105,7 @@ userRouter.post('/login', async (req, res) => {
   } catch (err) {
     res.status(500).json({
       status: RESPONSE_STATUSES.error,
-      message: 'Something went wrong.',
+      message: `${err.message}`,
     });
   }
 });
@@ -122,7 +122,7 @@ userRouter.post('/logout', async (req, res) => {
 userRouter.get('/:id/trips', async (req, res) => {
   const userId = req.params.id;
   const trips = await Trip.find({
-    userId,
+    userId: new Types.ObjectId(userId),
   });
 
   const tripResults = [];

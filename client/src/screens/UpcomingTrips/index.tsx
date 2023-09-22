@@ -10,6 +10,14 @@ import CardTextArea from '../../components/Card/CardTextArea';
 import styled, { css } from 'styled-components';
 import moment from 'moment';
 import Box from '../../components/Box';
+import Spinner from '../../components/Spinner';
+
+const SpinnerWrapper = styled.div`
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const TripsContainer = styled.div`
   max-width: 728px;
@@ -52,7 +60,7 @@ const UpcomingTrips = () => {
 
   const renderTrips = () => {
     return trips?.map((trip) => {
-      const tripYear = moment(trip.date).year();
+      const tripYear = moment(trip.startDate).year();
       let renderYear = false;
 
       if (!yearMap.has(tripYear)) {
@@ -83,6 +91,14 @@ const UpcomingTrips = () => {
       );
     });
   };
+
+  if (!trips) {
+    return (
+      <SpinnerWrapper>
+        <Spinner size={48} />
+      </SpinnerWrapper>
+    );
+  }
 
   return (
     <PageContainer>

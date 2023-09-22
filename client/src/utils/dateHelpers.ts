@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 /**
  * Get the number of days in a month based on the year
  *
@@ -31,7 +33,7 @@ export const dateToComponents = (date: Date) => {
   return {
     day: date.getDate(),
     month: date.getMonth(),
-    year: date.getFullYear(),
+    year: date.getFullYear()
   };
 };
 
@@ -39,19 +41,23 @@ export const dateToString = (date: Date) => {
   return dateComponentsToString({
     day: date.getDate(),
     month: date.getMonth(),
-    year: date.getFullYear(),
+    year: date.getFullYear()
   });
 };
 
-export const componentsToDate = (dateComponents: {
-  day: number;
-  month: number;
-  year: number;
-}) => {
-  const dateString = `${dateComponents.month + 1}-${dateComponents.day}-${
-    dateComponents.year
-  }`;
-  return new Date(dateString);
+/**
+ * @todo: need to account for different web browsers and how they perceive
+ * dates
+ * @param dateComponents
+ * @returns
+ */
+export const componentsToDate = (dateComponents: { day: number; month: number; year: number }) => {
+  const dateString = `${dateComponents.year}-${String(dateComponents.month + 1).padStart(
+    2,
+    '0'
+  )}-${String(dateComponents.day).padStart(2, '0')}`;
+
+  return moment(dateString).toDate();
 };
 
 export const dateComponentsToString = (dateComponents: {
@@ -59,11 +65,9 @@ export const dateComponentsToString = (dateComponents: {
   month: number;
   year: number;
 }) => {
-  const dateString = `${dateComponents.month + 1 < 10 ? '0' : ''}${
-    dateComponents.month + 1
-  }/${dateComponents.day < 10 ? '0' : ''}${dateComponents.day}/${
-    dateComponents.year
-  }`;
+  const dateString = `${dateComponents.month + 1 < 10 ? '0' : ''}${dateComponents.month + 1}/${
+    dateComponents.day < 10 ? '0' : ''
+  }${dateComponents.day}/${dateComponents.year}`;
 
   return dateString;
 };
@@ -80,7 +84,7 @@ export const MONTHS = [
   'September',
   'October',
   'November',
-  'December',
+  'December'
 ];
 
 export const WEEKDAYS = [
@@ -90,5 +94,5 @@ export const WEEKDAYS = [
   'Wednesday',
   'Thursday',
   'Friday',
-  'Saturday',
+  'Saturday'
 ];

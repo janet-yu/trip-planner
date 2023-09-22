@@ -189,8 +189,9 @@ class ItineraryLinkedList {
     const itineraryNode = this.trip.itinerary.find(
       (el) => el._id.toString() === nodeId.toString()
     );
+
     const prevItineraryNode = await this.trip.itinerary.find(
-      (el) => el._id.toString() === itineraryNode.prev.toString()
+      (el) => el._id.toString() === itineraryNode.prev?.toString()
     );
     const nextItineraryNode = await this.trip.itinerary.find(
       (el) => el._id.toString() === itineraryNode.next?.toString()

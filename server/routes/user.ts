@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { Types } from 'mongoose';
 import User from '../models/user';
 import Trip from '../models/trip';
 import { RESPONSE_STATUSES } from './utils/types';
 import { extendTripObject } from './trip';
-import { Types } from 'mongoose';
 
 const userRouter = Router();
 
@@ -122,7 +122,10 @@ userRouter.post('/logout', async (req, res) => {
 userRouter.get('/:id/trips', async (req, res) => {
   const userId = req.params.id;
   const trips = await Trip.find({
-    userId: new Types.ObjectId(userId),
+    $or: [
+      { userId: new Types.ObjectId(userId) },
+      { people: new Types.ObjectId(userId) },
+    ],
   });
 
   const tripResults = [];

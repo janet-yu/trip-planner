@@ -13,8 +13,8 @@ type Props = {
     lng: number;
   };
   zoom: number;
-  itinerary: any[];
-  lodging: any[];
+  itinerary?: any[];
+  lodging?: any[];
 };
 
 const MapContainer = styled.div`

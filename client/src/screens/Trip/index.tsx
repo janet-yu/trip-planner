@@ -579,9 +579,7 @@ const Trip = () => {
             </Section>
           </SectionsContainer>
         </TripDetailsContainer>
-        {itinerary?.length && lodging?.length && (
-          <Map zoom={zoom} mapCenter={mapCenter} itinerary={itinerary} lodging={lodging} />
-        )}
+        <Map zoom={zoom} mapCenter={mapCenter} itinerary={itinerary} lodging={lodging} />
         {modalOpen.open && selectedDate && renderModal(modalOpen.modalForm, modalOpen.metadata)}
       </MainContentContainer>
     </div>

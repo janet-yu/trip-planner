@@ -11,6 +11,7 @@ const StepIndicator = styled.div<{ active?: any; completed?: boolean }>`
   text-align: center;
   display: inline-block;
   transition: background 0.5s ease-in;
+  box-sizing: content-box;
 
   ${(props) =>
     props.active || props.completed

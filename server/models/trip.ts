@@ -30,11 +30,7 @@ const tripSchema = new Schema(
         },
       },
     ],
-    people: [
-      {
-        userId: Types.ObjectId,
-      },
-    ],
+    people: [Types.ObjectId],
     // MUST BE AN OBJECT ID, otherwise if you attempt to query by Object Id and this type is a string, mongoose won't query correctly
     userId: Types.ObjectId,
   },

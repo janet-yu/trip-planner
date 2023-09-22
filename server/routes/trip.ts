@@ -15,8 +15,8 @@ export const extendTripObject = async (trip) => {
   );
 
   const people = await Promise.all(
-    trip.people.map(async (person) => {
-      const foundPerson = await User.findById(person.userId);
+    trip.people.map(async (userId) => {
+      const foundPerson = await User.findById(userId);
 
       return foundPerson;
     })
@@ -50,7 +50,7 @@ tripRouter.post('/', verifyJwt, async (req, res) => {
       activities,
       // add photos and location
       userId: new Types.ObjectId(userId),
-      people: [...people, new Types.ObjectId(userId)],
+      people: [...(Boolean(people) && people), new Types.ObjectId(userId)],
     });
 
     res.status(201).json({
@@ -63,6 +63,7 @@ tripRouter.post('/', verifyJwt, async (req, res) => {
     res.status(500).json({
       status: RESPONSE_STATUSES.error,
       message: 'Failed to create trip',
+      error: err.message,
     });
   }
 });
@@ -420,7 +421,7 @@ tripRouter.post('/:id/people', async (req, res) => {
     const trip = await Trip.findById(id);
 
     if (
-      trip.people.some((el) => el.userId.toString() === user._id.toString())
+      trip.people.some((userId) => userId.toString() === user._id.toString())
     ) {
       return res.status(400).json({
         status: RESPONSE_STATUSES.fail,
